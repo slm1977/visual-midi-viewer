@@ -7,35 +7,40 @@ import './styles.css'
 import { Controls, useControl } from "react-three-gui"
 //Transform control
 //https://codesandbox.io/s/r3f-drei-transformcontrols-hc8gm
+//https://stackoverflow.com/questions/25797048/how-to-pass-in-a-react-component-into-another-react-component-to-transclude-the
 
-function AnimatedCone (props) 
+const withAnimation = Component => ({ ...props}) => 
 {
 //const { camera } = useThree()
-const noteCone = useRef();
+const shapeRef = useRef();
 
 useFrame((state,delta) => {
-    noteCone.current.rotation.y = noteCone.current.rotation.y + 0.1;
+    shapeRef.current.rotation.y = shapeRef.current.rotation.y + 0.1;
     //.update(delta)
         });
 
-return(<Cone ref={noteCone} {...props}>
-    <meshStandardMaterial  attach="material" color="green" />
-</Cone>)
+return(<Component ref={shapeRef} {...props}>
+        </Component>)
 } 
 
 export default function App(props) {
+    
+const AnimatedCone = withAnimation(Cone);
+const AnimatedBox = withAnimation(Box);
 return(
   <Canvas colorManagement camera={{ position: [0, 0, 11], fov: 25 }}>
     <ambientLight />
     <pointLight position={[10, 10, 10]} />
-    <Box>
+    <AnimatedBox>
       <meshStandardMaterial attach="material" color="orange" />
-    </Box>
+    </AnimatedBox>
 
     <Cone position={[1,1,2]}>
       <meshStandardMaterial  attach="material" color="red" />
     </Cone>
-    <AnimatedCone  position={[1,3,5]}/> 
+    <AnimatedCone  position={[1,3,5]}>
+        <meshStandardMaterial  attach="material" color="green" />
+    </AnimatedCone> 
     <Stars />
     <OrbitControls />
   </Canvas>
