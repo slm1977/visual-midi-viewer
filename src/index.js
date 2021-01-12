@@ -1,13 +1,19 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-//import App from './App';
-import App from './3DRenderer'; 
+import App from './App';
+import VisualRenderer3D from './3DRenderer'; 
 import reportWebVitals from './reportWebVitals';
+
+import { Provider } from 'react-redux'
+import store from './store';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <Provider store={store}>
+      <VisualRenderer3D/>
+      <App />
+    </Provider>
   </React.StrictMode>,
   document.getElementById('root')
 );

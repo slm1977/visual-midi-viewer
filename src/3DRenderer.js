@@ -23,7 +23,7 @@ return(<Component ref={shapeRef} {...props}>
         </Component>)
 } 
 
-export default function App(props) {
+export default function VisualRenderer3D(props) {
     
 const AnimatedCone = withAnimation(Cone);
 const AnimatedBox = withAnimation(Box);

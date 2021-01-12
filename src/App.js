@@ -4,10 +4,15 @@ import './App.css';
 import MIDISounds from 'midi-sounds-react';
 import MidiPlayer from "midi-player-js";
 import axios from "axios";
+import VisualRenderer3D from './3DRenderer'; 
 
 //https://github.com/surikov/midi-sounds-react-examples/blob/master/examples/midi-sounds-example10/src/App.js
 
 //http://grimmdude.com/MidiPlayerJS/docs/Player.html#getTotalEvents
+
+// Midi and Redux
+//https://elenatorro.com/jsday-2017-talk/
+//https://react-redux.js.org/using-react-redux/connect-mapdispatch
 
 const midi = (key) => `${process.env.PUBLIC_URL}/midi/${key}.mid`;
 const loadMidi = async (url) => {
@@ -184,14 +189,16 @@ else if (event.name=="Program Change")
     //console.log(`instruments: ${instruments}`);
 
     return (
+     
       <div className="App">
-       <h1>Midi Sounds Player</h1>
+     
         <p><button disabled={!fileReady} onClick={this.playMidi.bind(this)}>Play</button></p>
         <p><button onClick={this.stopMidi.bind(this)}>Stop</button></p>
         <MIDISounds ref={(ref) => (this.midiSounds = ref)} 
         appElementName="root" 
         instruments={instruments} />	
       </div>
+      
     );
   }
 }
