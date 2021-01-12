@@ -4,7 +4,9 @@ import './App.css';
 import MIDISounds from 'midi-sounds-react';
 import MidiPlayer from "midi-player-js";
 import axios from "axios";
-import VisualRenderer3D from './3DRenderer'; 
+import {noteOn, noteOff} from "./store";
+import {connect} from 'react-redux';
+//https://github.com/reduxjs/rtk-convert-todos-example
 
 //https://github.com/surikov/midi-sounds-react-examples/blob/master/examples/midi-sounds-example10/src/App.js
 
@@ -26,6 +28,7 @@ class App extends Component {
   {
     super(props);
     console.log("START");
+    console.log(props);
     this.state = {fileReady: false,
                   // instruments to be loaded
                   instruments:[], 
@@ -129,6 +132,10 @@ else if (event.name=="Program Change")
     , 0, event.noteNumber, 9999,event.velocity);
      
     this.setNoteEnvelop(event, envelop);
+
+    // eseguo il dispach del NoteOn
+    //console.log(`Redux NoteOn:  ${event.noteNumber} ${event.velocity}`);
+   this.props.noteOn(event.noteNumber,event.velocity);
   }
 
   stopNote = (event) =>{
@@ -140,6 +147,7 @@ else if (event.name=="Program Change")
     {
       noteEnvelop.cancel();
       this.setNoteEnvelop(event, null);
+     this.props.noteOff(event.noteNumber);
     }
     
   }
@@ -202,5 +210,10 @@ else if (event.name=="Program Change")
     );
   }
 }
- 
-export default App;
+
+const mapDispatchToProps = {
+ noteOn,
+ noteOff
+}
+// devo solo eseguire dei dispatch, non mi serve leggero lo stato dallo store
+export default connect(null, mapDispatchToProps)(App);

@@ -6,32 +6,37 @@ import { configureStore, createSlice } from '@reduxjs/toolkit';
 
 const midiSlice = createSlice({
     name: "midiSlice",
-    initialState: {"testParam": 50},
+    initialState: { "lastNote" :{ "noteNumber" : null , "vel" : null}},
     reducers: {
-      increment: 
+    
+      noteOn:
       {
-          reducer(state,action)
-          {
-            state["testParam"] += action.payload.step
-          },
-          prepare(step){
-            return {payload: {step}}
-          }
-         
-      },
-      
-      midiOn: state => state,
-      midiOff: state => state - 1
+        reducer(state, action) {
+          state["lastNote"] = {"noteNumber" : action.payload.value, "vel" : action.payload.velocity}
+        },
+        prepare(value,velocity){
+            return {payload: {value,velocity}}
+        }
+      } ,
+      noteOff:
+      {
+        reducer(state, action) {
+          state["lastNote"] = {"noteNumber" : action.payload.value, "vel" : 0}
+        },
+        prepare(value){
+            return {payload: {value}}
+        }
+      } 
     }
   });
 
   //const { actions, reducer } = midiSlice
-  const { increment } =  midiSlice.actions
+  export const {  noteOn, noteOff } =  midiSlice.actions
  
 const store = configureStore({
     reducer: midiSlice.reducer
   })
    console.log("Redux: Dispatch!!!");
-  store.dispatch(increment(20));
-
+    store.dispatch(noteOn(56,67));
+    store.dispatch(noteOff(80));
 export default store
