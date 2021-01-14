@@ -1,8 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
-import VisualRenderer3D from './3DRenderer'; 
+import Renderer3D from './3DRenderer';
 import reportWebVitals from './reportWebVitals';
 
 import { Provider } from 'react-redux'
@@ -11,8 +10,7 @@ import store from './store';
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
-      <VisualRenderer3D/>
-      <App />
+      <Renderer3D />
     </Provider>
   </React.StrictMode>,
   document.getElementById('root')

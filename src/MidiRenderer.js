@@ -6,6 +6,8 @@ import MidiPlayer from "midi-player-js";
 import axios from "axios";
 import {noteOn, noteOff} from "./store";
 import {connect} from 'react-redux';
+ 
+
 //https://github.com/reduxjs/rtk-convert-todos-example
 
 //https://github.com/surikov/midi-sounds-react-examples/blob/master/examples/midi-sounds-example10/src/App.js
@@ -22,7 +24,7 @@ const loadMidi = async (url) => {
   return data;
 };
 
-class App extends Component {
+class MidiRenderer extends Component {
 
   constructor(props)
   {
@@ -124,7 +126,7 @@ else if (event.name=="Program Change")
  startNote = (event) => {
 
   const instrument = this.getChannelInstrument(event.channel);
-  console.log(`Note On: (Track:${event.track}) ${event.noteNumber} Velocity:${event.velocity}`);
+  //console.log(`Note On: (Track:${event.track}) ${event.noteNumber} Velocity:${event.velocity}`);
         
   const envelop = this.midiSounds.player.queueWaveTable(this.midiSounds.audioContext
     , this.midiSounds.equalizer.input
@@ -136,6 +138,8 @@ else if (event.name=="Program Change")
     // eseguo il dispach del NoteOn
     //console.log(`Redux NoteOn:  ${event.noteNumber} ${event.velocity}`);
    this.props.noteOn(event.noteNumber,event.velocity);
+
+   this.props.onUpdateNote(event.noteNumber);
   }
 
   stopNote = (event) =>{
@@ -199,7 +203,6 @@ else if (event.name=="Program Change")
     return (
      
       <div className="App">
-     
         <p><button disabled={!fileReady} onClick={this.playMidi.bind(this)}>Play</button></p>
         <p><button onClick={this.stopMidi.bind(this)}>Stop</button></p>
         <MIDISounds ref={(ref) => (this.midiSounds = ref)} 
@@ -216,4 +219,4 @@ const mapDispatchToProps = {
  noteOff
 }
 // devo solo eseguire dei dispatch, non mi serve leggero lo stato dallo store
-export default connect(null, mapDispatchToProps)(App);
+export default connect(null, mapDispatchToProps)(MidiRenderer);
