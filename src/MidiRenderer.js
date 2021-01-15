@@ -77,6 +77,7 @@ class MidiRenderer extends Component {
 
     await this.loadInstruments(instruments);
    // note envelopes for each note and each track
+   this.props.onMidiLoaded({numTracks, instruments});
   
  }
 
@@ -145,8 +146,6 @@ else if (event.name=="Program Change")
     // eseguo il dispach del NoteOn
     //console.log(`Redux NoteOn:  ${event.noteNumber} ${event.velocity}`);
    this.props.noteOn(event.noteNumber,event.velocity);
-
-   this.props.onUpdateNote(event.noteNumber);
   }
 
   stopNote = (event) =>{
@@ -170,7 +169,9 @@ else if (event.name=="Program Change")
       const {envelopes} = this.state;
       let newEnvelopes = [...envelopes];
       newEnvelopes[track-1][noteNumber] = envelope;
-      this.setState({"envelopes": newEnvelopes});  
+      this.setState({"envelopes": newEnvelopes}, () => {
+             this.props.onNoteEvent({"event" : event, "envelope" : newEnvelopes})
+            }); 
     }
 
   getNoteEnvelop = (track, noteNumber) =>

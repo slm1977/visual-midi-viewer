@@ -29,7 +29,10 @@ const shapeRef = useRef();
 
 useFrame((state,delta) => {
 
-  const note = props.noteRef.current;
+  const infoEvent = props.noteRef.current;
+  console.log("Informazione");
+  console.log(infoEvent);
+  const note = infoEvent.event.noteNumber;
 
     //console.log(`Valore Ref di last Note da Animated: ${props.noteRef.current}`);
     //console.log(`Valore di material: ${shapeRef.current.material.color}`);
@@ -64,12 +67,18 @@ const AnimatedBox = React.memo(withAnimation(Box));
 
 const Renderer3D = (props) => {
 
-  const noteRef = React.useRef();
- 
-  const updateLastNote = (note) => {
-      //console.log(`Ultima nota in 3Drenderer: ${note}`);
-      noteRef.current = note;
+  const noteEventRef = React.useRef();
+const [midiDataRef, setmidiDataRef] = useState({});
+
+  const updateNote = (infoEvent) => {
+      console.log(`Ultimo evento in 3Drenderer: ${infoEvent}`);
+      noteEventRef.current = infoEvent;
     }
+
+   const loadMidiData = (midiData) =>
+   {
+     setmidiDataRef(midiData);
+   }
     
     return(
         <div style={{borderStyle: "solid",  borderColor: "grey",
@@ -79,10 +88,10 @@ const Renderer3D = (props) => {
         <Canvas colorManagement camera={{ position: [0, 0, 11], fov: 25 }}>
           <ambientLight />
           <pointLight position={[10, 10, 10]}/>
-          <AnimatedBox noteRef={noteRef}>
+          <AnimatedBox noteRef={noteEventRef}>
             <meshStandardMaterial attach="material" color="orange" />
           </AnimatedBox>
-          <AnimatedCone noteRef={noteRef}>
+          <AnimatedCone noteRef={noteEventRef}>
             <meshStandardMaterial attach="material" color="green" />
           </AnimatedCone>
           <Stars />
@@ -90,7 +99,7 @@ const Renderer3D = (props) => {
         </Canvas>
         </div>
         <div style={{borderStyle: "solid",  borderColor: "grey", 'height': '20%'}}> >
-           <MidiRenderer onUpdateNote={updateLastNote} />)
+           <MidiRenderer onMidiLoaded={loadMidiData} onNoteEvent={updateNote} />)
       </div>
 
         </div>
