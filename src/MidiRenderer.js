@@ -1,12 +1,17 @@
 import React, { Component } from 'react';
-import {Input, Label} from 'reactstrap';
-import './App.css';
+import {Input, Badge, Label} from 'reactstrap';
+//import './App.css';
+import './styles.css';
 import MIDISounds from 'midi-sounds-react';
 import MidiPlayer from "midi-player-js";
 import axios from "axios";
 import {noteOn, noteOff} from "./store";
 import {connect} from 'react-redux';
- 
+import { IconContext } from "react-icons";
+import { FaPlay, FaPause, FaStop } from 'react-icons/fa';
+import IconButton from '@material-ui/core/IconButton';
+import ReactTooltip from "react-tooltip";
+import moment from 'moment';
 
 //https://github.com/reduxjs/rtk-convert-todos-example
 
@@ -32,6 +37,8 @@ class MidiRenderer extends Component {
     console.log("START");
     console.log(props);
     this.state = {fileReady: false,
+                  songDuration: 49,
+                  isPaused: true,
                   // instruments to be loaded
                   instruments:[], 
                   // instrument related to each Midi Channel
@@ -42,8 +49,6 @@ class MidiRenderer extends Component {
   }
 
   
-
-
  async componentDidMount()
  {
    // Initialize player and register event handler
@@ -66,7 +71,9 @@ class MidiRenderer extends Component {
     let envelopes = Array.from(Array(tracks.length), () => new Array(128));
     console.log(`Inizializzo l'envelopes:`);
     console.log(envelopes);
-    this.setState({envelopes});
+    const songDuration = moment.duration(Math.floor(this.midiPlayer.getSongTime()), "seconds");
+    const numTracks = tracks.length;
+    this.setState({envelopes, songDuration, numTracks});
 
     await this.loadInstruments(instruments);
    // note envelopes for each note and each track
@@ -186,25 +193,78 @@ else if (event.name=="Program Change")
   playMidi = () => {
         console.log("Playing...");
         this.midiPlayer.play();
+        this.setState({isPaused: false});
     }
+
+  pauseMidi = () => {
+      console.log("Pausing...");
+      this.midiPlayer.pause();
+      this.setState({isPaused: true});
+  }
 
   stopMidi = () =>  {
         console.log("Stop...");
         this.midiPlayer.stop();
+        this.setState({isPaused: true});
+    }
+
+    componentDidUpdate(prevProps,prevState)
+    {
+        if (this.state.isPaused!=prevState.isPaused)
+        {
+            ReactTooltip.rebuild();
+        }
     }
  
   
   render() {
 
-    const {instruments, envelopes} = this.state;
+    const {instruments, envelopes, isPaused, songDuration, numTracks} = this.state;
     const fileReady = instruments!=null && instruments.length>0 && envelopes!=null;
+    const formattedDuration = moment(songDuration).format("HH:MM:SS") //  moment.duration(songDuration, "seconds")
+    
     //console.log(`instruments: ${instruments}`);
-
+    
     return (
      
       <div className="App">
-        <p><button disabled={!fileReady} onClick={this.playMidi.bind(this)}>Play</button></p>
-        <p><button onClick={this.stopMidi.bind(this)}>Stop</button></p>
+        <div style={{flex: 1, flexDirection: 'row' , justifyContent :'flex-start', alignItems:'flex-start', flexShrink: '0'}}>
+         {
+           isPaused ? (
+          <IconButton  disabled={!fileReady} onClick={this.playMidi.bind(this)} >
+                <IconContext.Provider value={{ color:  `white`, 
+                                              className: "global-class-name" , size: "0.5em"}}>
+                    <FaPlay data-place="top" data-tip={"Play midi"} />
+                </IconContext.Provider>
+            </IconButton>)
+             :
+                (
+                <IconButton  disabled={!fileReady} onClick={this.pauseMidi.bind(this)} >
+                  <IconContext.Provider value={{ color:  `white`, 
+                                                className: "global-class-name" , size: "0.5em"}}>
+                      <FaPause data-place="top" data-tip={"Pause midi"} />
+                  </IconContext.Provider>
+              </IconButton>
+
+                )
+            }
+            <IconButton  disabled={!fileReady} onClick={this.stopMidi.bind(this)} >
+                <IconContext.Provider value={{ color:  `white`, 
+                                              className: "global-class-name" , size: "0.5em"}}>
+                    <FaStop data-place="top" data-tip={"Stop midi"} />
+                </IconContext.Provider>
+            </IconButton>
+            { fileReady && 
+                <div style={{display:'inline-block', margin:'10px'}}>
+                <Badge style={{color: "white"}} pill>Numero tracce: {numTracks}  (Durata:{formattedDuration} secs.)</Badge>
+                </div>
+            }
+           
+          
+            <ReactTooltip/>  
+        </div>
+        
+        
         <MIDISounds ref={(ref) => (this.midiSounds = ref)} 
         appElementName="root" 
         instruments={instruments} />	

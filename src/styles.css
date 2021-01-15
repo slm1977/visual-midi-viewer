@@ -10,6 +10,11 @@
     margin: 0;
     padding: 0;
   }
+
+.App {
+  text-align: center;
+
+}
   
   body {
     background: #272730;

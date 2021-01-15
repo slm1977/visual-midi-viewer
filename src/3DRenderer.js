@@ -3,10 +3,7 @@
 import React, { Suspense, useEffect, useRef, useState, useCallback, useMemo} from "react";
 import { Canvas, render, useFrame, useUpdate  } from 'react-three-fiber';
 import { Stars, TrackballControls, OrbitControls, MapControls, Box, Cone } from '@react-three/drei'
-import './styles.css'
 //import { Controls, useControl } from "react-three-gui"
-//import {connect, useSelector } from 'react-redux';
-//import { createSelector } from '@reduxjs/toolkit'
 import * as THREE from 'three';
 
 import MidiRenderer from './MidiRenderer';
@@ -22,6 +19,7 @@ import MidiRenderer from './MidiRenderer';
 //https://github.com/reduxjs/rtk-convert-todos-example/blob/master/src/features/todos/VisibleTodoList.js
 //https://bmbarker90.github.io/selectors-presentation/#/11
 
+
 const withAnimation = Component => ({ ...props}) => 
 {
 
@@ -35,7 +33,7 @@ useFrame((state,delta) => {
 
     //console.log(`Valore Ref di last Note da Animated: ${props.noteRef.current}`);
     //console.log(`Valore di material: ${shapeRef.current.material.color}`);
-    console.log(shapeRef.current.material.color);
+    //console.log(shapeRef.current.material.color);
     
 
       if (note && note%2==0)
@@ -47,6 +45,7 @@ useFrame((state,delta) => {
       else
       {
         shapeRef.current.material.color = new THREE.Color('orange');
+        shapeRef.current.rotation.y = shapeRef.current.rotation.y - 0.1;
       }
       
     });
@@ -73,8 +72,10 @@ const Renderer3D = (props) => {
     }
     
     return(
-        <div>
-        
+        <div style={{borderStyle: "solid",  borderColor: "grey",
+        'overflowY': 'auto', 'height': '100%'}}>
+        <div style={{borderStyle: "solid",  borderColor: "grey",
+        'overflowY': 'auto', 'height': '80%'}}> 
         <Canvas colorManagement camera={{ position: [0, 0, 11], fov: 25 }}>
           <ambientLight />
           <pointLight position={[10, 10, 10]}/>
@@ -87,7 +88,11 @@ const Renderer3D = (props) => {
           <Stars />
           <OrbitControls />
         </Canvas>
-      <MidiRenderer onUpdateNote={updateLastNote} />)
+        </div>
+        <div style={{borderStyle: "solid",  borderColor: "grey", 'height': '20%'}}> >
+           <MidiRenderer onUpdateNote={updateLastNote} />)
+      </div>
+
         </div>
       );
 }
@@ -95,6 +100,9 @@ const Renderer3D = (props) => {
 export default Renderer3D;
 
  /*
+
+ //import {connect, useSelector } from 'react-redux';
+//import { createSelector } from '@reduxjs/toolkit'
 const mapStateToProps = state =>
 ({
   lastNote : state["lastNote"]["noteNumber"]
