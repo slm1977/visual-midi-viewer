@@ -28,17 +28,18 @@ const shapeRef = useRef();
 
 
 useFrame((state,delta) => {
-
-  const infoEvent = props.noteRef.current;
-  console.log("Informazione");
-  console.log(infoEvent);
-  const note = infoEvent.event.noteNumber;
+ 
+  const infoEvent = props.noteRef;
+  //console.log("Informazione");
+  //console.log(infoEvent);S
+  if (infoEvent==null ||infoEvent.current==null ) return;
+  const note = infoEvent.current.event.noteNumber;
 
     //console.log(`Valore Ref di last Note da Animated: ${props.noteRef.current}`);
     //console.log(`Valore di material: ${shapeRef.current.material.color}`);
     //console.log(shapeRef.current.material.color);
     
-
+      
       if (note && note%2==0)
       {
         shapeRef.current.material.color = new THREE.Color('indianred');
@@ -50,7 +51,7 @@ useFrame((state,delta) => {
         shapeRef.current.material.color = new THREE.Color('orange');
         shapeRef.current.rotation.y = shapeRef.current.rotation.y - 0.1;
       }
-      
+       
     });
 
       
@@ -59,8 +60,9 @@ return(<Component ref={shapeRef} {...props}>
         </Component>)
 } 
 
-
-const AnimatedCone = withAnimation(Cone);
+//https://javascript.info/object#computed-properties
+//const componentName = "AnimatedCone";
+const AnimatedCone = React.memo(withAnimation(Cone));
 const AnimatedBox = React.memo(withAnimation(Box));
 
 //https://levelup.gitconnected.com/react-refs-for-function-components-44f1a5a2332a
@@ -68,16 +70,18 @@ const AnimatedBox = React.memo(withAnimation(Box));
 const Renderer3D = (props) => {
 
   const noteEventRef = React.useRef();
-const [midiDataRef, setmidiDataRef] = useState({});
+  const [midiData, setmidiData] = useState({});
 
   const updateNote = (infoEvent) => {
-      console.log(`Ultimo evento in 3Drenderer: ${infoEvent}`);
+      //console.log(`Ultimo evento in 3Drenderer: ${infoEvent}`);
+      //console.log(infoEvent);
       noteEventRef.current = infoEvent;
     }
 
    const loadMidiData = (midiData) =>
    {
-     setmidiDataRef(midiData);
+     console.log("midi data loaded: setting state...");
+     setmidiData(midiData);
    }
     
     return(
@@ -88,10 +92,10 @@ const [midiDataRef, setmidiDataRef] = useState({});
         <Canvas colorManagement camera={{ position: [0, 0, 11], fov: 25 }}>
           <ambientLight />
           <pointLight position={[10, 10, 10]}/>
-          <AnimatedBox noteRef={noteEventRef}>
+          <AnimatedBox noteRef={noteEventRef} songData={midiData}>
             <meshStandardMaterial attach="material" color="orange" />
           </AnimatedBox>
-          <AnimatedCone noteRef={noteEventRef}>
+          <AnimatedCone noteRef={noteEventRef} songData={midiData}>
             <meshStandardMaterial attach="material" color="green" />
           </AnimatedCone>
           <Stars />
