@@ -2,11 +2,15 @@
 
 import React, { Suspense, useEffect, useRef, useState, useCallback, useMemo} from "react";
 import { Canvas, render, useFrame, useUpdate  } from 'react-three-fiber';
-import { Stars, TrackballControls, OrbitControls, MapControls, Box, Cone } from '@react-three/drei'
+import { Stars, TrackballControls, OrbitControls, MapControls, 
+  Box, Cone, Sphere } from '@react-three/drei'
 //import { Controls, useControl } from "react-three-gui"
 import * as THREE from 'three';
 
 import MidiRenderer from './MidiRenderer';
+
+
+const trackShapes = [Sphere,Cone,Box]
 
 //Transform control
 //https://codesandbox.io/s/r3f-drei-transformcontrols-hc8gm
@@ -20,6 +24,8 @@ import MidiRenderer from './MidiRenderer';
 //https://bmbarker90.github.io/selectors-presentation/#/11
 
 
+// Building TrackShape...
+//https://medium.com/@Carmichaelize/dynamic-tag-names-in-react-and-jsx-17e366a684e9
 const withAnimation = Component => ({ ...props}) => 
 {
 
@@ -39,31 +45,46 @@ useFrame((state,delta) => {
     //console.log(`Valore di material: ${shapeRef.current.material.color}`);
     //console.log(shapeRef.current.material.color);
     
+    const color = props.trackIndex==0 ? 'indianred' : 'green';
       
       if (note && note%2==0)
       {
-        shapeRef.current.material.color = new THREE.Color('indianred');
+        shapeRef.current.material.color = new THREE.Color(color);
         shapeRef.current.rotation.y = shapeRef.current.rotation.y + 0.1;
       }
      
       else
       {
-        shapeRef.current.material.color = new THREE.Color('orange');
+        shapeRef.current.material.color = new THREE.Color(color);
         shapeRef.current.rotation.y = shapeRef.current.rotation.y - 0.1;
       }
        
     });
 
-      
-
 return(<Component ref={shapeRef} {...props}>
         </Component>)
 } 
 
+const TrackShape = (props) => {
+
+  const {shapes} = props;
+  let tracks = null;
+  if (shapes!=null)
+  tracks = shapes.map((shape, index) => React.memo(withAnimation(shape)));
+  else
+  tracks = [React.memo(withAnimation(Cone)), React.memo(withAnimation(Box))]; 
+  
+  const MyShape = (props.trackIndex!=null &&
+                  props.trackIndex>=0 && props.trackIndex<tracks.length) ? 
+                  tracks[props.trackIndex] : React.memo(withAnimation(Box));
+  
+  return <MyShape {...props} />
+}
+
 //https://javascript.info/object#computed-properties
 //const componentName = "AnimatedCone";
-const AnimatedCone = React.memo(withAnimation(Cone));
-const AnimatedBox = React.memo(withAnimation(Box));
+//const AnimatedCone = React.memo(withAnimation(Cone));
+//const AnimatedBox = React.memo(withAnimation(Box));
 
 //https://levelup.gitconnected.com/react-refs-for-function-components-44f1a5a2332a
 
@@ -92,12 +113,12 @@ const Renderer3D = (props) => {
         <Canvas colorManagement camera={{ position: [0, 0, 11], fov: 25 }}>
           <ambientLight />
           <pointLight position={[10, 10, 10]}/>
-          <AnimatedBox noteRef={noteEventRef} songData={midiData}>
+          <TrackShape trackIndex={0} shapes={trackShapes} noteRef={noteEventRef} songData={midiData}>
             <meshStandardMaterial attach="material" color="orange" />
-          </AnimatedBox>
-          <AnimatedCone noteRef={noteEventRef} songData={midiData}>
+          </TrackShape>
+          <TrackShape trackIndex={1} shapes={trackShapes} noteRef={noteEventRef} songData={midiData}>
             <meshStandardMaterial attach="material" color="green" />
-          </AnimatedCone>
+          </TrackShape>
           <Stars />
           <OrbitControls />
         </Canvas>
