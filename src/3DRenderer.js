@@ -45,17 +45,20 @@ useFrame((state,delta) => {
     //console.log(`Valore di material: ${shapeRef.current.material.color}`);
     //console.log(shapeRef.current.material.color);
     
-    const color = props.trackIndex==0 ? 'indianred' : 'green';
-      
+    const color = props.trackIndex==0 ? new THREE.Color().setHSL(7 / 8, 1, .5) : 
+                                        new THREE.Color().setHSL(4 / 8, 1, .5);
+
+    shapeRef.current.material.opacity = 0.5;
+    shapeRef.current.material.transparent = props.trackIndex==0 ? true : false;
       if (note && note%2==0)
-      {
-        shapeRef.current.material.color = new THREE.Color(color);
+      { 
+        shapeRef.current.material.color = color;
         shapeRef.current.rotation.y = shapeRef.current.rotation.y + 0.1;
       }
      
       else
       {
-        shapeRef.current.material.color = new THREE.Color(color);
+        shapeRef.current.material.color = color;
         shapeRef.current.rotation.y = shapeRef.current.rotation.y - 0.1;
       }
        
@@ -111,13 +114,14 @@ const Renderer3D = (props) => {
         <div style={{borderStyle: "solid",  borderColor: "grey",
         'overflowY': 'auto', 'height': '80%'}}> 
         <Canvas colorManagement camera={{ position: [0, 0, 11], fov: 25 }}>
-          <ambientLight />
-          <pointLight position={[10, 10, 10]}/>
+        <ambientLight intensity={1} color="0xFFFFFF"/>
+          <directionalLight position={[-1, 2, 4]} intensity={1}/>
+          <directionalLight position={[1, -1, -2]} intensity={1}/>
           <TrackShape trackIndex={0} shapes={trackShapes} noteRef={noteEventRef} songData={midiData}>
-            <meshStandardMaterial attach="material" color="orange" />
+            <meshPhongMaterial attach="material" color="orange" />
           </TrackShape>
           <TrackShape trackIndex={1} shapes={trackShapes} noteRef={noteEventRef} songData={midiData}>
-            <meshStandardMaterial attach="material" color="green" />
+            <meshPhongMaterial attach="material" color="green" />
           </TrackShape>
           <Stars />
           <OrbitControls />
