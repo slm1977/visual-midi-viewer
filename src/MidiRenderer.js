@@ -58,10 +58,10 @@ class MidiRenderer extends Component {
 
  loadMidi = async () =>
  {
-     
+     const fileName = "bach_brandenburg_concerto_1_1"
     // Load a MIDI file
     //console.log(Player);
-    this.midiPlayer.loadArrayBuffer(await loadMidi(midi("bach_brandenburg_concerto_1_1")));
+    this.midiPlayer.loadArrayBuffer(await loadMidi(midi(fileName)));
     const {instruments} = this.midiPlayer;
     console.log("Lista strumenti");
     console.log(instruments);
@@ -73,11 +73,11 @@ class MidiRenderer extends Component {
     console.log(envelopes);
     const songDuration = moment.duration(Math.floor(this.midiPlayer.getSongTime()), "seconds");
     const numTracks = tracks.length;
-    this.setState({envelopes, songDuration, numTracks});
+    this.setState({envelopes, songDuration, numTracks, fileName});
 
     await this.loadInstruments(instruments);
    // note envelopes for each note and each track
-   this.props.onMidiLoaded({numTracks, instruments});
+   this.props.onMidiLoaded({numTracks, instruments, fileName});
   
  }
 

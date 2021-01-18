@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { useFrame } from 'react-three-fiber';
 import { Box, Cone, Sphere } from '@react-three/drei'
 
@@ -44,30 +44,37 @@ return(<Component ref={shapeRef} {...props}>
         </Component>)
 } 
 
-/*
-const TrackShape = (props) => {
-
-
-    const MyShape = (props.trackIndex!=null &&
-                    props.trackIndex>=0 && props.trackIndex<tracks.length) ? 
-                    tracks[props.trackIndex] : React.memo(withAnimation(Box));
-    
-    return <MyShape {...props} />
-  }
-*/
   const TracksRenderer = (props) => {
     
+    const filenameRef = useRef("");
+    const trackShapesRef = useRef([]);
+
     const {shapes, songData, noteEventRef } = props;
     // If are not midi data available, I have to render null
     if (songData==null) return;
-    console.log(`Note Event Ref: ${noteEventRef}`);
-    let trackShapes = null;
-    if (shapes!=null)
-    trackShapes = shapes.map((shape, index) => React.memo(withAnimation(shape)));
-    else
-    trackShapes = [React.memo(withAnimation(Cone)), React.memo(withAnimation(Box))]; 
+    
+    const {numTracks, instruments, fileName} = songData;
 
-      return trackShapes.map((TrackShape, index) =>
+    // if midi file was changed, recreate Track Shapes
+    if (filenameRef.current!=fileName)
+    {
+        filenameRef.current = fileName;
+
+        console.log(`Note Event Ref: ${noteEventRef}`);
+        let trackShapes = [];
+    
+        for (let i=0;i<numTracks; i++)
+        {   
+            const trackShape = (shapes!=null && shapes[i]!=null) ?
+                 React.memo(withAnimation(shapes[i])) : React.memo(withAnimation(Box));
+                 trackShapes.push(trackShape);
+        }
+        // Update the ref to track shapes
+        trackShapesRef.current = trackShapes;
+    }
+   
+      // render current track shapes
+      return trackShapesRef.current.map((TrackShape, index) =>
       (
         <TrackShape position={[index*2,0,0]}  trackIndex={index} 
                                               key={index}

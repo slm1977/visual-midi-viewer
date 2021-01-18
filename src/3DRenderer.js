@@ -3,11 +3,11 @@ import { Canvas, render, useFrame, useUpdate  } from 'react-three-fiber';
 import { Stars, TrackballControls, OrbitControls, MapControls } from '@react-three/drei'
 //import { Controls, useControl } from "react-three-gui"
 
-import { Box, Cone, Sphere } from '@react-three/drei'
+import { Box, Cone, Sphere, Torus } from '@react-three/drei'
 import TracksRenderer from './components/trackShapes';
 import MidiRenderer from './MidiRenderer';
 
-const trackShapes = [Sphere,Cone,Box]
+const trackShapes = [Sphere,Cone,Box, Torus];
 
 const Renderer3D = (props) => {
 
