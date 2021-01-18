@@ -1,0 +1,23 @@
+//3D Primitives
+https://www.npmjs.com/package/@react-three/drei
+
+
+// Computed properties
+//https://javascript.info/object#computed-properties
+
+//Transform control
+//https://codesandbox.io/s/r3f-drei-transformcontrols-hc8gm
+//https://stackoverflow.com/questions/25797048/how-to-pass-in-a-react-component-into-another-react-component-to-transclude-the
+
+//Shape Positions
+//https://inspiring-wiles-b4ffe0.netlify.app/2-objects-and-properties
+
+// Redux toolkit example
+//https://github.com/reduxjs/rtk-convert-todos-example/blob/master/src/features/todos/VisibleTodoList.js
+//https://bmbarker90.github.io/selectors-presentation/#/11
+
+//Lights and transparency
+//https://threejsfundamentals.org/threejs/lessons/threejs-transparency.html
+
+// Building TrackShape...
+//https://medium.com/@Carmichaelize/dynamic-tag-names-in-react-and-jsx-17e366a684e9
