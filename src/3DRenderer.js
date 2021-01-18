@@ -1,13 +1,9 @@
 import React, { useState } from "react";
 import { Canvas, render, useFrame, useUpdate  } from 'react-three-fiber';
 import { Stars, TrackballControls, OrbitControls, MapControls } from '@react-three/drei'
-//import { Controls, useControl } from "react-three-gui"
-
-import { Box, Cone, Sphere, Torus } from '@react-three/drei'
 import TracksRenderer from './components/trackShapes';
 import MidiRenderer from './MidiRenderer';
-
-const trackShapes = [Sphere,Cone,Box, Torus];
+//import { Controls, useControl } from "react-three-gui"
 
 const Renderer3D = (props) => {
 
@@ -36,13 +32,13 @@ const Renderer3D = (props) => {
           <directionalLight position={[-1, 2, 4]} intensity={1}/>
           <directionalLight position={[1, -1, -2]} intensity={1}/>
 
-          <TracksRenderer shapes={trackShapes} songData={midiData} noteEventRef={noteEventRef} />
+          <TracksRenderer songData={midiData} noteEventRef={noteEventRef} />
 
           <Stars />
           <OrbitControls />
         </Canvas>
         </div>
-        <div style={{borderStyle: "solid",  borderColor: "grey", 'height': '20%'}}> >
+        <div style={{borderStyle: "solid",  borderColor: "grey", 'height': '20%'}}>  
            <MidiRenderer onMidiLoaded={loadMidiData} onNoteEvent={updateNote} />)
       </div>
 

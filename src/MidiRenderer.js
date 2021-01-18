@@ -12,6 +12,7 @@ import { FaPlay, FaPause, FaStop } from 'react-icons/fa';
 import IconButton from '@material-ui/core/IconButton';
 import ReactTooltip from "react-tooltip";
 import moment from 'moment';
+import {getMidiFilename} from './midi2shapesMapper';
 
 //https://github.com/reduxjs/rtk-convert-todos-example
 
@@ -58,7 +59,7 @@ class MidiRenderer extends Component {
 
  loadMidi = async () =>
  {
-     const fileName = "bach_brandenburg_concerto_1_1"
+     const fileName = getMidiFilename();
     // Load a MIDI file
     //console.log(Player);
     this.midiPlayer.loadArrayBuffer(await loadMidi(midi(fileName)));

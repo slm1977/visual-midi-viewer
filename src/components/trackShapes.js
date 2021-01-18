@@ -1,7 +1,7 @@
-import * as THREE from 'three';
+
 import React, { useRef, useState } from "react";
 import { useFrame } from 'react-three-fiber';
-import { Box, Cone, Sphere } from '@react-three/drei'
+import {getNoteColor, getNotePosition, getNoteRotation, getDefaultTrackShape} from '../midi2shapesMapper';
 
 
 const withAnimation = Component => ({ ...props}) => 
@@ -9,39 +9,60 @@ const withAnimation = Component => ({ ...props}) =>
 
 //const { camera } = useThree()
 const shapeRef = useRef();
-
+const shapeVisible = useRef(false);
+const isNoteOn = useRef(false);
 
 useFrame((state,delta) => {
  
-  const infoEvent = props.noteRef;
-  if (infoEvent==null ||infoEvent.current==null ) return;
-  const note = infoEvent.current.event.noteNumber;
+  const {trackIndex, noteEventRef} = props;
+  const infoEvent = noteEventRef;
+ 
 
-    console.log(`Valore Ref di last Note da Animated: ${props.noteRef.current}`);
+  if (infoEvent==null ||infoEvent.current==null ) return;
+  
+  const noteEvent = infoEvent.current.event;
+ 
+
+    //console.log(`Valore Ref di last Note da Animated: ${noteEvent} Track Event: ${noteEvent.track}`);
+    //console.log(noteEvent);
     //console.log(`Valore di material: ${shapeRef.current.material.color}`);
     //console.log(shapeRef.current.material.color);
     
-    const color = props.trackIndex==0 ? new THREE.Color().setHSL(7 / 8, 1, .5) : 
-                                        new THREE.Color().setHSL(4 / 8, 1, .5);
-   console.log(`Shape position ${shapeRef.current.position.x} ${shapeRef.current.position.y} ${shapeRef.current.position.z}`)
-    shapeRef.current.material.opacity = 0.5;
-    shapeRef.current.material.transparent = props.trackIndex==0 ? true : false;
-      if (note && note%2==0)
-      { 
-        shapeRef.current.material.color = color;
-        shapeRef.current.rotation.y = shapeRef.current.rotation.y + 0.1;
-      }
-     
-      else
-      {
-        shapeRef.current.material.color = color;
-        shapeRef.current.rotation.y = shapeRef.current.rotation.y - 0.1;
-      }
-       
-    });
+    if (trackIndex==noteEvent.track)
+    {
+        isNoteOn.current = noteEvent.name=="Note on" && noteEvent.velocity>0;
+        shapeVisible.current = true;
 
-return(<Component ref={shapeRef} {...props}>
-        </Component>)
+
+        console.log(`Shape position ${shapeRef.current.position.x} ${shapeRef.current.position.y} 
+                    ${shapeRef.current.position.z} trackIndex: ${trackIndex} evTrack: ${noteEvent.track}`)
+        
+        console.log(noteEvent);
+        shapeRef.current.material.opacity = 0.5;
+        shapeRef.current.material.transparent =  true;
+        
+        shapeRef.current.material.color = getNoteColor(noteEvent);
+        
+        const noteRotation = getNoteRotation(noteEvent);
+        shapeRef.current.scale.x = noteRotation[0];
+        shapeRef.current.scale.y = noteRotation[1];
+        shapeRef.current.scale.z = noteRotation[2];
+        
+        if (isNoteOn.current)
+        {  
+            const notePosition = getNotePosition(noteEvent);
+            shapeRef.current.position.x = notePosition[0];
+            shapeRef.current.position.y = notePosition[1];
+            shapeRef.current.position.z = notePosition[2];
+            shapeRef.current.rotation.y += 0.1;
+        }  
+    }
+    
+    });
+    
+        return(<Component scale={[0,0,0]} ref={shapeRef} {...props}>
+                </Component>)
+       
 } 
 
   const TracksRenderer = (props) => {
@@ -49,7 +70,7 @@ return(<Component ref={shapeRef} {...props}>
     const filenameRef = useRef("");
     const trackShapesRef = useRef([]);
 
-    const {shapes, songData, noteEventRef } = props;
+    const {config, songData, noteEventRef } = props;
     // If are not midi data available, I have to render null
     if (songData==null) return;
     
@@ -65,8 +86,9 @@ return(<Component ref={shapeRef} {...props}>
     
         for (let i=0;i<numTracks; i++)
         {   
-            const trackShape = (shapes!=null && shapes[i]!=null) ?
-                 React.memo(withAnimation(shapes[i])) : React.memo(withAnimation(Box));
+            const trackShape = (config!=null && config.shapes!=null && config.shapes[i]!=null) ?
+                 React.memo(withAnimation(config.shapes[i])) : 
+                 React.memo(withAnimation(getDefaultTrackShape(i)));
                  trackShapes.push(trackShape);
         }
         // Update the ref to track shapes
@@ -76,9 +98,9 @@ return(<Component ref={shapeRef} {...props}>
       // render current track shapes
       return trackShapesRef.current.map((TrackShape, index) =>
       (
-        <TrackShape position={[index*2,0,0]}  trackIndex={index} 
+        <TrackShape                          trackIndex={index} 
                                               key={index}
-                                              noteRef={noteEventRef} 
+                                              noteEventRef={noteEventRef} 
                                                >
         <meshPhongMaterial attach="material" color="orange" />
       </TrackShape>
