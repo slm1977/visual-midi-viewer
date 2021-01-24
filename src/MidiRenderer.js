@@ -98,6 +98,9 @@ class MidiRenderer extends Component {
  }
 
 handleMidiEvents = (event) => {
+
+  console.log(`Evento ${event.name} vel: ${event.velocity}`);
+
   if (event.name =="Program Change")
   {
     const channel = event.channel;
@@ -117,8 +120,9 @@ if (event.name=="Note on")
    this.startNote(event);
  }
 }
-else if (event.name=="Note Off")
+else if (event.name=="Note off")
 {
+
   this.stopNote(event);
 }
 

@@ -11,7 +11,7 @@ const Renderer3D = (props) => {
   const [midiData, setmidiData] = useState({});
 
   const updateNote = (infoEvent) => {
-      //console.log(`Ultimo evento in 3Drenderer: ${infoEvent}`);
+      console.log(`Ultimo evento in 3Drenderer: ${infoEvent}`);
       //console.log(infoEvent);
       noteEventRef.current = infoEvent;
     }

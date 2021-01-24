@@ -27,7 +27,9 @@ const availablePrimitives =
 export const getMidiFilename = () =>
 {
   //const midiFile = "bach_brandenburg_concerto_1_1";
-  const midiFile = "bachwachauf";
+  //const midiFile = "bachwachauf";
+  const midiFile = "beethoven_opus10_1_format0"
+  //const midiFile = "scalacromatica"; //"bachwachauf";
   return midiFile;
 }
 
@@ -44,20 +46,34 @@ export const getNotePosition = (noteEvent) =>
   return [posX,1,1] // [posX,(octave+1)*octaveDistanceOffset ,1]
 }
 
+
+export const getNoteColorByIndex = (noteNumber,trackIndex) =>
+{
+  console.log(`Note for color!!: ${noteNumber} -> Track_${trackIndex}`);
+  const octave = Math.floor(noteNumber/12) -1;
+  return new THREE.Color().setHSL(noteNumber /12, 1, .5);
+}
+
 export const getNoteColor = (noteEvent) =>
 {
   const {noteNumber, track} = noteEvent;
   const note = noteNumber % 12;
-  console.log(`Note for color!!: ${noteNumber} -> Track_${track}`);
-  const octave = Math.floor(noteNumber/12) -1;
-  return new THREE.Color().setHSL(note /12, 1, .5);
+  return getNoteColorByIndex(note, track-1);
 } 
+
+export const getNoteScale = (noteEvent) =>
+{
+  const scaleValue = noteEvent.name=="Note on" ? noteEvent.velocity/64 : 0;
+  return [scaleValue,scaleValue,scaleValue];
+}
 
 export const getNoteRotation = (noteEvent) =>
 {
-  const rotationValue = noteEvent.name=="Note on" ? noteEvent.velocity/64 : 0;
+  const rotationValue = noteEvent.name=="Note on" ? 0.1 : 0;
   return [rotationValue,rotationValue,rotationValue];
 }
+
+
 
 export const getDefaultTrackShape = (trackIndex) =>
 {

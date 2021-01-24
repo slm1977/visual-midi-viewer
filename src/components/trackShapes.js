@@ -1,70 +1,95 @@
-
 import React, { useRef, useState } from "react";
 import { useFrame } from 'react-three-fiber';
-import {getNoteColor, getNotePosition, getNoteRotation, getDefaultTrackShape} from '../midi2shapesMapper';
-
+import {getNoteColor, getNotePosition, getNoteScale, getNoteRotation, getDefaultTrackShape, getNoteColorByIndex} from '../midi2shapesMapper';
+import * as THREE from 'three';
 
 const withAnimation = Component => ({ ...props}) => 
 {
 
-//const { camera } = useThree()
-const shapeRef = useRef();
-const shapeVisible = useRef(false);
-const isNoteOn = useRef(false);
+  //const { camera } = useThree()
+  const shapeRef = useRef();
 
-useFrame((state,delta) => {
- 
-  const {trackIndex, noteEventRef} = props;
+  const isNoteOn = useRef(false);
+
+  useFrame((state,delta) => {
+
+  const {trackIndex,noteNumber, noteEventRef} = props;
   const infoEvent = noteEventRef;
  
-
-  if (infoEvent==null ||infoEvent.current==null ) return;
-  
-  const noteEvent = infoEvent.current.event;
- 
-
-    //console.log(`Valore Ref di last Note da Animated: ${noteEvent} Track Event: ${noteEvent.track}`);
-    //console.log(noteEvent);
-    //console.log(`Valore di material: ${shapeRef.current.material.color}`);
-    //console.log(shapeRef.current.material.color);
-    
-    if (trackIndex==noteEvent.track)
+  if (infoEvent==null || infoEvent.current==null ) 
     {
-        isNoteOn.current = noteEvent.name=="Note on" && noteEvent.velocity>0;
-        shapeVisible.current = true;
-
-
-        console.log(`Shape position ${shapeRef.current.position.x} ${shapeRef.current.position.y} 
-                    ${shapeRef.current.position.z} trackIndex: ${trackIndex} evTrack: ${noteEvent.track}`)
-        
-        console.log(noteEvent);
-        shapeRef.current.material.opacity = 0.5;
-        shapeRef.current.material.transparent =  true;
-        
-        shapeRef.current.material.color = getNoteColor(noteEvent);
-        
-        const noteRotation = getNoteRotation(noteEvent);
-        shapeRef.current.scale.x = noteRotation[0];
-        shapeRef.current.scale.y = noteRotation[1];
-        shapeRef.current.scale.z = noteRotation[2];
-        
-        if (isNoteOn.current)
-        {  
-            const notePosition = getNotePosition(noteEvent);
-            shapeRef.current.position.x = notePosition[0];
-            shapeRef.current.position.y = notePosition[1];
-            shapeRef.current.position.z = notePosition[2];
-            shapeRef.current.rotation.y += 0.1;
-        }  
+      //console.log("INFO EVENT NULLO!!");
+      return;
     }
+   
+  const noteEvent = infoEvent.current.event;
+  console.log(`INFO EVENT OK su nota: ${noteEvent.noteNumber} Track: ${noteEvent.track}`);
+  if (noteNumber!=noteEvent.noteNumber || trackIndex!=(noteEvent.track-1 ))return;
+
+    isNoteOn.current = noteEvent.name=="Note on" && noteEvent.velocity>0;
     
-    });
+    console.log(`Shape position ${shapeRef.current.position.x} ${shapeRef.current.position.y} 
+                ${shapeRef.current.position.z} trackIndex: ${trackIndex} evTrack: ${noteEvent.track}`)
     
-        return(<Component scale={[0,0,0]} ref={shapeRef} {...props}>
-                </Component>)
-       
+    //console.log(noteEvent);
+    //shapeRef.current.material.opacity = 0.5;
+    //shapeRef.current.material.transparent =  true;
+    //shapeRef.current.materialside = THREE.DoubleSide;
+    //shapeRef.current.material.color = getNoteColor(noteEvent);
+    
+    
+    
+    if (isNoteOn.current===true)
+    {  
+      const noteScale = getNoteScale(noteEvent);
+        shapeRef.current.scale.x = noteScale[0];
+        shapeRef.current.scale.y = noteScale[1];
+        shapeRef.current.scale.z = noteScale[2];
+
+        const notePosition = getNotePosition(noteEvent);
+        shapeRef.current.position.x = notePosition[0];
+        shapeRef.current.position.y = notePosition[1];
+        shapeRef.current.position.z = notePosition[2];
+
+        shapeRef.current.rotation.x += getNoteRotation(noteEvent)[0];
+        shapeRef.current.rotation.y += getNoteRotation(noteEvent)[1];
+        shapeRef.current.rotation.z += getNoteRotation(noteEvent)[2];
+    }  
+    else
+    {
+      console.log("Intercettato midi off!");
+      shapeRef.current.scale.x = 0; //noteScale[0];
+      shapeRef.current.scale.y = 0; //noteScale[1];
+      shapeRef.current.scale.z = 0; //noteScale[2];
+      
+    }
+  });
+    
+  return(<Component ref={shapeRef} {...props}>
+          </Component>)
+  
 } 
 
+
+/*
+  const TrackRenderer = (props) => {
+    
+    const trackNotesRef = useRef([]);
+
+    const {noteEventRef, trackIndex} = props;
+    const envelopes = noteEventRef.envelope;
+    return envelopes.map((envelope,index) => {
+        ( envelope!=null &&
+          <TrackShape trackIndex={index} key={index}
+          noteEventRef={noteEventRef} 
+           >
+      <meshPhongMaterial attach="material" color="orange" />
+      </TrackShape>
+                
+          )
+    } );
+  }
+*/
   const TracksRenderer = (props) => {
     
     const filenameRef = useRef("");
@@ -80,32 +105,47 @@ useFrame((state,delta) => {
     if (filenameRef.current!=fileName)
     {
         filenameRef.current = fileName;
-
-        console.log(`Note Event Ref: ${noteEventRef}`);
         let trackShapes = [];
-    
+       // create a TrackRenderer for each midi track
+       console.log("Creazione dei TrackShapes");
         for (let i=0;i<numTracks; i++)
         {   
+          //one Shape for each midi note for each midi track
+          for (let j=0;j<128;j++)
+          {
             const trackShape = (config!=null && config.shapes!=null && config.shapes[i]!=null) ?
-                 React.memo(withAnimation(config.shapes[i])) : 
-                 React.memo(withAnimation(getDefaultTrackShape(i)));
-                 trackShapes.push(trackShape);
+            React.memo(withAnimation(config.shapes[i])) : 
+            React.memo(withAnimation(getDefaultTrackShape(i)));
+            trackShapes.push(trackShape);
+
+          }
+          
         }
         // Update the ref to track shapes
         trackShapesRef.current = trackShapes;
+
+
     }
-   
+     
+    console.log(`Numero di trackShapes: ${trackShapesRef.current.length} noteEventRef:${noteEventRef.current}`);
       // render current track shapes
       return trackShapesRef.current.map((TrackShape, index) =>
       (
-        <TrackShape                          trackIndex={index} 
-                                              key={index}
-                                              noteEventRef={noteEventRef} 
-                                               >
-        <meshPhongMaterial attach="material" color="orange" />
-      </TrackShape>
-      )
-      )
+        // una TrackShape per ciascuna nota Midi
+       
+          <TrackShape                          
+                trackIndex={Math.floor(index/128)} 
+                noteNumber={index%128}
+                key={index}
+                noteEventRef={noteEventRef} 
+                >
+              <meshPhongMaterial attach="material" 
+              opacity = {0.5} transparent={true}  
+              side =  {THREE.DoubleSide}
+              color={ getNoteColorByIndex(index%128, Math.floor(index/128))} />
+          </TrackShape>
+             
+        ))
   }
  
   export default TracksRenderer; //React.memo(TracksRenderer);
