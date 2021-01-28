@@ -45,8 +45,9 @@ class MidiRenderer extends Component {
                   // instrument related to each Midi Channel
                   channelInstrument: Array.from({length: 16}, (_, i) => 0),
                   // note envelopes for each note and each track
-                  envelopes: null //Array.from(Array(20), () => new Array(128)) // 16 tracks with 128 different notes available
-                  };
+                  envelopes: null, //Array.from(Array(20), () => new Array(128)) // 16 tracks with 128 different notes available
+                  status: "Keyboard disconnected"
+                };
   }
 
   
@@ -55,6 +56,7 @@ class MidiRenderer extends Component {
    // Initialize player and register event handler
    this.midiPlayer = new MidiPlayer.Player(this.handleMidiEvents);
   await this.loadMidi();
+  this.startListening();
  }
 
  loadMidi = async () =>
@@ -221,6 +223,60 @@ else if (event.name=="Program Change")
             ReactTooltip.rebuild();
         }
     }
+
+
+    // MIDI KEYBOARD HANDLING
+
+    midiOnMIDImessage = (event) => {
+      console.log("EVENTO MIDI", event);
+      var data = event.data;
+      var cmd = data[0] >> 4;
+      var channel = data[0] & 0xf;
+      var type = data[0] & 0xf0;
+      var pitch = data[1];
+      var velocity = data[2];
+      switch (type) {
+      case 144:
+        if (velocity>0) this.startNote({"track": 1, velocity, "noteNumber" : pitch,
+                                    "channel" :1, "tick":0, "name": "Note on"});
+        break;
+      case 128:
+        this.keyUp(pitch);
+        break;
+      }
+  
+      if (velocity==0) this.stopNote({"track": 1, velocity, "noteNumber" : pitch,
+      "channel" :1, "tick":0, "name": "Note off"});
+    }
+    onMIDIOnStateChange = (event) => {
+      this.setState({status:event.port.manufacturer + ' ' + event.port.name + ' ' + event.port.state});
+    }
+    requestMIDIAccessSuccess = (midi)=> {
+      console.log("CONNESSIONE MIDI RIUSCITA!!!");
+      console.log(midi);
+      var inputs = midi.inputs.values();
+      for (var input = inputs.next(); input && !input.done; input = inputs.next()) {
+        input.value.onmidimessage = this.midiOnMIDImessage.bind(this);
+      }
+      midi.onstatechange = this.onMIDIOnStateChange.bind(this);
+    }
+    requestMIDIAccessFailure =(e) => {
+      console.log("CONNESSIONE MIDI  FALLITA!!!");
+      console.log('requestMIDIAccessFailure', e);
+      this.setState({status:'MIDI Access Failure'});
+    }
+
+    startListening = () => {
+      console.log("Inizio ad ascaoltare le connessioni midi");
+      this.setState({status:'waiting'});
+      if (navigator.requestMIDIAccess) {
+        navigator.requestMIDIAccess().then(this.requestMIDIAccessSuccess.bind(this), this.requestMIDIAccessFailure.bind(this));
+      } else {
+        this.setState({status:'navigator.requestMIDIAccess undefined'});
+      }
+    }
+
+    // ----------------------------
  
   
   render() {

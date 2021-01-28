@@ -46,7 +46,7 @@ class App extends Component {
 	}
 	componentDidMount() {
 		this.envelopes=[];				
-		//this.startListening();
+		this.startListening();
 	}
 	onSelectInstrument(e){
 		var list=e.target;
@@ -101,6 +101,7 @@ class App extends Component {
 		return false;
 	}
 	midiOnMIDImessage(event){
+		console.log("EVENTO MIDI", event);
 		var data = event.data;
 		var cmd = data[0] >> 4;
 		var channel = data[0] & 0xf;
@@ -109,17 +110,20 @@ class App extends Component {
 		var velocity = data[2];
 		switch (type) {
 		case 144:
-			this.keyDown(pitch, velocity/127);
+			if (velocity>0) this.keyDown(pitch, velocity/127);
 			break;
 		case 128:
 			this.keyUp(pitch);
 			break;
 		}
+
+		if (velocity==0) this.keyUp(pitch);
 	}
 	onMIDIOnStateChange(event) {
 		this.setState({status:event.port.manufacturer + ' ' + event.port.name + ' ' + event.port.state});
 	}
 	requestMIDIAccessSuccess(midi){
+		console.log("CONNESSIONE MIDI RIUSCITA!!!");
 		console.log(midi);
 		var inputs = midi.inputs.values();
 		for (var input = inputs.next(); input && !input.done; input = inputs.next()) {
@@ -128,10 +132,12 @@ class App extends Component {
 		midi.onstatechange = this.onMIDIOnStateChange.bind(this);
 	}
 	requestMIDIAccessFailure(e){
+		console.log("CONNESSIONE MIDI  FALLITA!!!");
 		console.log('requestMIDIAccessFailure', e);
 		this.setState({status:'MIDI Access Failure'});
 	}
 	startListening(){
+		console.log("Inizio ad ascaoltare le connessioni midi");
 		this.setState({status:'waiting'});
 		if (navigator.requestMIDIAccess) {
 			navigator.requestMIDIAccess().then(this.requestMIDIAccessSuccess.bind(this), this.requestMIDIAccessFailure.bind(this));

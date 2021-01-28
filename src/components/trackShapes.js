@@ -8,7 +8,7 @@ const withAnimation = Component => ({ ...props}) =>
 
   //const { camera } = useThree()
   const shapeRef = useRef();
-
+  const lastEventTick = useRef(-1);
   const isNoteOn = useRef(false);
 
   useFrame((state,delta) => {
@@ -16,21 +16,30 @@ const withAnimation = Component => ({ ...props}) =>
   const {trackIndex,noteNumber, noteEventRef} = props;
   const infoEvent = noteEventRef;
  
-  if (infoEvent==null || infoEvent.current==null ) 
+  if (infoEvent==null || infoEvent.current==null || infoEvent.current.tick< lastEventTick.current) 
     {
       //console.log("INFO EVENT NULLO!!");
       return;
     }
+
+    // se la nota è stata già spenta, non la riaccendo allo stesso tick
+    // n.b: è un bug fix...da correggere
+    if (lastEventTick==infoEvent.current.tick && !isNoteOn.current)
+    { console.log(`Nota 3D ${noteNumber} già spenta, non la riattivo `); 
+      return}
    
   const noteEvent = infoEvent.current.event;
-  console.log(`INFO EVENT OK su nota: ${noteEvent.noteNumber} Track: ${noteEvent.track}`);
+  lastEventTick.current = noteEvent.tick;
+
+  //console.log(`INFO EVENT OK su nota: ${noteEvent.noteNumber} vel: ${noteEvent.velocity} Track: ${noteEvent.track}`);
   if (noteNumber!=noteEvent.noteNumber || trackIndex!=(noteEvent.track-1 ))return;
 
     isNoteOn.current = noteEvent.name=="Note on" && noteEvent.velocity>0;
-    
+    console.log(`Nota 3D ${noteNumber} tick:${noteEvent.tick} attiva ? ${isNoteOn.current}`);
+    /*
     console.log(`Shape position ${shapeRef.current.position.x} ${shapeRef.current.position.y} 
                 ${shapeRef.current.position.z} trackIndex: ${trackIndex} evTrack: ${noteEvent.track}`)
-    
+    */
     //console.log(noteEvent);
     //shapeRef.current.material.opacity = 0.5;
     //shapeRef.current.material.transparent =  true;

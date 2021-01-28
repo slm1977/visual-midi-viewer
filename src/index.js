@@ -1,16 +1,18 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import Renderer3D from './3DRenderer';
 import reportWebVitals from './reportWebVitals';
 
 import { Provider } from 'react-redux'
 import store from './store';
-
+import App from './example10'
+ 
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
-      <Renderer3D />
+      <Renderer3D/>
     </Provider>
   </React.StrictMode>,
   document.getElementById('root')
