@@ -21,13 +21,14 @@ const withAnimation = Component => ({ ...props}) =>
       //console.log("INFO EVENT NULLO!!");
       return;
     }
-
+      /*
     // se la nota è stata già spenta, non la riaccendo allo stesso tick
     // n.b: è un bug fix...da correggere
     if (lastEventTick==infoEvent.current.tick && !isNoteOn.current)
     { console.log(`Nota 3D ${noteNumber} già spenta, non la riattivo `); 
       return}
-   
+   */  
+  
   const noteEvent = infoEvent.current.event;
   lastEventTick.current = noteEvent.tick;
 
