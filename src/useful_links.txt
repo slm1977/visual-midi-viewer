@@ -1,0 +1,2 @@
+https://www.sitepoint.com/how-to-migrate-a-react-app-to-typescript/
+https://redux-toolkit.js.org/tutorials/intermediate-tutorial

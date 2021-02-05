@@ -5,7 +5,7 @@ import './styles.css';
 import MIDISounds from 'midi-sounds-react';
 import MidiPlayer from "midi-player-js";
 import axios from "axios";
-import {noteOn, noteOff} from "./store";
+import {actions as MidiActions} from "./store/slices/midiSlice";
 import {connect} from 'react-redux';
 import { IconContext } from "react-icons";
 import { FaPlay, FaPause, FaStop } from 'react-icons/fa';
@@ -151,8 +151,9 @@ else if (event.name=="Program Change")
     this.setNoteEnvelop(event, envelop);
 
     // eseguo il dispach del NoteOn
-    //console.log(`Redux NoteOn:  ${event.noteNumber} ${event.velocity}`);
-   this.props.noteOn(event.noteNumber,event.velocity);
+  console.log(`Redux NoteOn:`, event);
+   
+   this.props.noteOn(event);
   }
 
   stopNote = (event) =>{
@@ -164,7 +165,8 @@ else if (event.name=="Program Change")
     {
       noteEnvelop.cancel();
       this.setNoteEnvelop(event, null);
-     this.props.noteOff(event.noteNumber);
+    console.log(`Redux NoteOff:`, event);
+     this.props.noteOff(event);
     }
     
   }
@@ -235,6 +237,7 @@ else if (event.name=="Program Change")
       var type = data[0] & 0xf0;
       var pitch = data[1];
       var velocity = data[2];
+      // eslint-disable-next-line default-case
       switch (type) {
       case 144:
         if (velocity>0) this.startNote({"track": 1, velocity, "noteNumber" : pitch,
@@ -337,8 +340,8 @@ else if (event.name=="Program Change")
 }
 
 const mapDispatchToProps = {
- noteOn,
- noteOff
+ noteOn : MidiActions.noteOn,
+ noteOff : MidiActions.noteOff
 }
 // devo solo eseguire dei dispatch, non mi serve leggero lo stato dallo store
 export default connect(null, mapDispatchToProps)(MidiRenderer);
