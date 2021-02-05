@@ -3,76 +3,49 @@ import { useFrame } from 'react-three-fiber';
 import {getNoteColor, getNotePosition, getNoteScale, getNoteRotation, getDefaultTrackShape, getNoteColorByIndex} from '../midi2shapesMapper';
 import * as THREE from 'three';
 
+import { useSelector } from 'react-redux';
+import {selectors as MidiSelector} from '../store/slices/midiSlice';
+
 const withAnimation = Component => ({ ...props}) => 
 {
 
   //const { camera } = useThree()
   const shapeRef = useRef();
-  const lastEventTick = useRef(-1);
-  const isNoteOn = useRef(false);
+
+  const {trackIndex,noteNumber} = props;
+
+  
+
+  const noteVelocity = useSelector(MidiSelector.getNoteVelocity(trackIndex, noteNumber));
+  const noteEvent = {noteNumber, track:trackIndex, velocity: noteVelocity} ;
+  console.log(`Note selector velocity--> ${noteVelocity}`);
 
   useFrame((state,delta) => {
+        //console.log("Chiamato useFrame!");
+      if (noteVelocity>0)
+          {  
+            const noteScale = getNoteScale(noteEvent);
+              shapeRef.current.scale.x = noteScale[0];
+              shapeRef.current.scale.y = noteScale[1];
+              shapeRef.current.scale.z = noteScale[2];
 
-  const {trackIndex,noteNumber, noteEventRef} = props;
-  const infoEvent = noteEventRef;
- 
-  if (infoEvent==null || infoEvent.current==null || infoEvent.current.tick< lastEventTick.current) 
-    {
-      //console.log("INFO EVENT NULLO!!");
-      return;
-    }
-      /*
-    // se la nota è stata già spenta, non la riaccendo allo stesso tick
-    // n.b: è un bug fix...da correggere
-    if (lastEventTick==infoEvent.current.tick && !isNoteOn.current)
-    { console.log(`Nota 3D ${noteNumber} già spenta, non la riattivo `); 
-      return}
-   */  
-  
-  const noteEvent = infoEvent.current.event;
-  lastEventTick.current = noteEvent.tick;
+              const notePosition = getNotePosition(noteEvent);
+              shapeRef.current.position.x = notePosition[0];
+              shapeRef.current.position.y = notePosition[1];
+              shapeRef.current.position.z = notePosition[2];
 
-  //console.log(`INFO EVENT OK su nota: ${noteEvent.noteNumber} vel: ${noteEvent.velocity} Track: ${noteEvent.track}`);
-  if (noteNumber!=noteEvent.noteNumber || trackIndex!=(noteEvent.track-1 ))return;
-
-    isNoteOn.current = noteEvent.name=="Note on" && noteEvent.velocity>0;
-    console.log(`Nota 3D ${noteNumber} tick:${noteEvent.tick} attiva ? ${isNoteOn.current}`);
-    /*
-    console.log(`Shape position ${shapeRef.current.position.x} ${shapeRef.current.position.y} 
-                ${shapeRef.current.position.z} trackIndex: ${trackIndex} evTrack: ${noteEvent.track}`)
-    */
-    //console.log(noteEvent);
-    //shapeRef.current.material.opacity = 0.5;
-    //shapeRef.current.material.transparent =  true;
-    //shapeRef.current.materialside = THREE.DoubleSide;
-    //shapeRef.current.material.color = getNoteColor(noteEvent);
-    
-    
-    
-    if (isNoteOn.current===true)
-    {  
-      const noteScale = getNoteScale(noteEvent);
-        shapeRef.current.scale.x = noteScale[0];
-        shapeRef.current.scale.y = noteScale[1];
-        shapeRef.current.scale.z = noteScale[2];
-
-        const notePosition = getNotePosition(noteEvent);
-        shapeRef.current.position.x = notePosition[0];
-        shapeRef.current.position.y = notePosition[1];
-        shapeRef.current.position.z = notePosition[2];
-
-        shapeRef.current.rotation.x += getNoteRotation(noteEvent)[0];
-        shapeRef.current.rotation.y += getNoteRotation(noteEvent)[1];
-        shapeRef.current.rotation.z += getNoteRotation(noteEvent)[2];
-    }  
-    else
-    {
-      console.log("Intercettato midi off!");
-      shapeRef.current.scale.x = 0; //noteScale[0];
-      shapeRef.current.scale.y = 0; //noteScale[1];
-      shapeRef.current.scale.z = 0; //noteScale[2];
-      
-    }
+              shapeRef.current.rotation.x += getNoteRotation(noteEvent)[0];
+              shapeRef.current.rotation.y += getNoteRotation(noteEvent)[1];
+              shapeRef.current.rotation.z += getNoteRotation(noteEvent)[2];
+          }  
+          else
+          {
+            //console.log("Intercettato midi off!");
+            shapeRef.current.scale.x = 0; //noteScale[0];
+            shapeRef.current.scale.y = 0; //noteScale[1];
+            shapeRef.current.scale.z = 0; //noteScale[2];
+            
+          }
   });
     
   return(<Component ref={shapeRef} {...props}>
@@ -81,29 +54,13 @@ const withAnimation = Component => ({ ...props}) =>
 } 
 
 
-/*
-  const TrackRenderer = (props) => {
-    
-    const trackNotesRef = useRef([]);
-
-    const {noteEventRef, trackIndex} = props;
-    const envelopes = noteEventRef.envelope;
-    return envelopes.map((envelope,index) => {
-        ( envelope!=null &&
-          <TrackShape trackIndex={index} key={index}
-          noteEventRef={noteEventRef} 
-           >
-      <meshPhongMaterial attach="material" color="orange" />
-      </TrackShape>
-                
-          )
-    } );
-  }
-*/
   const TracksRenderer = (props) => {
     
     const filenameRef = useRef("");
     const trackShapesRef = useRef([]);
+
+    //const testS = useSelector(MidiSelector.getNoteVelocity(3, 48));
+    //console.log("NoteSelector:", testS);
 
     const {config, songData, noteEventRef } = props;
     // If are not midi data available, I have to render null
@@ -127,14 +84,11 @@ const withAnimation = Component => ({ ...props}) =>
             React.memo(withAnimation(config.shapes[i])) : 
             React.memo(withAnimation(getDefaultTrackShape(i)));
             trackShapes.push(trackShape);
-
           }
           
         }
         // Update the ref to track shapes
         trackShapesRef.current = trackShapes;
-
-
     }
      
     console.log(`Numero di trackShapes: ${trackShapesRef.current.length} noteEventRef:${noteEventRef.current}`);

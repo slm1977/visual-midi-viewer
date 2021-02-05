@@ -343,5 +343,5 @@ const mapDispatchToProps = {
  noteOn : MidiActions.noteOn,
  noteOff : MidiActions.noteOff
 }
-// devo solo eseguire dei dispatch, non mi serve leggero lo stato dallo store
+// devo solo eseguire dei dispatch, non mi serve leggere lo stato dallo store
 export default connect(null, mapDispatchToProps)(MidiRenderer);

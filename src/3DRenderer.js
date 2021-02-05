@@ -4,11 +4,16 @@ import { Stars, TrackballControls, OrbitControls, MapControls } from '@react-thr
 import TracksRenderer from './components/trackShapes';
 import MidiRenderer from './MidiRenderer';
 //import { Controls, useControl } from "react-three-gui"
+import { Provider } from 'react-redux'
+
+import { useSelector } from 'react-redux';
+import {selectors as MidiSelector} from './store/slices/midiSlice';
 
 const Renderer3D = (props) => {
 
   const noteEventRef = React.useRef();
   const [midiData, setmidiData] = useState({});
+
 
   const updateNote = (infoEvent) => {
       console.log(`Ultimo evento in 3Drenderer: ${infoEvent}`);
@@ -28,14 +33,16 @@ const Renderer3D = (props) => {
         <div style={{borderStyle: "solid",  borderColor: "grey",
         'overflowY': 'auto', 'height': '80%'}}> 
         <Canvas colorManagement camera={{ position: [0, 0, 11], fov: 25 }}>
-        <ambientLight intensity={1} color="0xFFFFFF"/>
-          <directionalLight position={[-1, 2, 4]} intensity={1}/>
-          <directionalLight position={[1, -1, -2]} intensity={1}/>
-
+          <Provider store={props.store}>
+            <ambientLight intensity={1} color="0xFFFFFF"/>
+              <directionalLight position={[-1, 2, 4]} intensity={1}/>
+              <directionalLight position={[1, -1, -2]} intensity={1}/>
+          
           <TracksRenderer songData={midiData} noteEventRef={noteEventRef} />
 
           <Stars />
           <OrbitControls />
+          </Provider>
         </Canvas>
         </div>
         <div style={{borderStyle: "solid",  borderColor: "grey", 'height': '20%'}}>  

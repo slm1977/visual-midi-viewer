@@ -12,7 +12,7 @@ import App from './example10'
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
-      <Renderer3D/>
+      <Renderer3D store={store}/>
     </Provider>
   </React.StrictMode>,
   document.getElementById('root')

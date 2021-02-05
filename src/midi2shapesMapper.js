@@ -28,8 +28,8 @@ export const getMidiFilename = () =>
 {
   //const midiFile = "bach_brandenburg_concerto_1_1";
   //const midiFile = "bachwachauf";
-  //const midiFile = "beethoven_opus10_1_format0"
-  const midiFile = "scalacromatica"; //"bachwachauf";
+  const midiFile = "beethoven_opus10_1_format0"
+  //const midiFile = "scalacromatica"; //"bachwachauf";
   return midiFile;
 }
 
@@ -49,7 +49,7 @@ export const getNotePosition = (noteEvent) =>
 
 export const getNoteColorByIndex = (noteNumber,trackIndex) =>
 {
-  console.log(`Note for color!!: ${noteNumber} -> Track_${trackIndex}`);
+  //console.log(`Note for color!!: ${noteNumber} -> Track_${trackIndex}`);
   const octave = Math.floor(noteNumber/12) -1;
   return new THREE.Color().setHSL(noteNumber /12, 1, .5);
 }
@@ -63,13 +63,13 @@ export const getNoteColor = (noteEvent) =>
 
 export const getNoteScale = (noteEvent) =>
 {
-  const scaleValue = noteEvent.name=="Note on" ? noteEvent.velocity/64 : 0;
+  const scaleValue = noteEvent.velocity/64;
   return [scaleValue,scaleValue,scaleValue];
 }
 
 export const getNoteRotation = (noteEvent) =>
 {
-  const rotationValue = noteEvent.name=="Note on" ? 0.1 : 0;
+  const rotationValue = noteEvent.velocity>0 ? 0.1 : 0;
   return [rotationValue,rotationValue,rotationValue];
 }
 
