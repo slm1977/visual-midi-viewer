@@ -18,10 +18,12 @@ const withAnimation = Component => ({ ...props}) =>
 
   const noteVelocity = useSelector(MidiSelector.getNoteVelocity(trackIndex, noteNumber));
   const noteEvent = {noteNumber, track:trackIndex, velocity: noteVelocity} ;
-  console.log(`Note selector velocity--> ${noteVelocity}`);
+  //console.log(`Note selector velocity--> ${noteVelocity}`);
 
   useFrame((state,delta) => {
         //console.log("Chiamato useFrame!");
+        if (shapeRef.current==null) return;
+
       if (noteVelocity>0)
           {  
             const noteScale = getNoteScale(noteEvent);
@@ -62,7 +64,7 @@ const withAnimation = Component => ({ ...props}) =>
     //const testS = useSelector(MidiSelector.getNoteVelocity(3, 48));
     //console.log("NoteSelector:", testS);
 
-    const {config, songData, noteEventRef } = props;
+    const {config, songData } = props;
     // If are not midi data available, I have to render null
     if (songData==null) return;
     
@@ -91,8 +93,8 @@ const withAnimation = Component => ({ ...props}) =>
         trackShapesRef.current = trackShapes;
     }
      
-    console.log(`Numero di trackShapes: ${trackShapesRef.current.length} noteEventRef:${noteEventRef.current}`);
-      // render current track shapes
+    // render current track shapes
+  
       return trackShapesRef.current.map((TrackShape, index) =>
       (
         // una TrackShape per ciascuna nota Midi
@@ -101,7 +103,6 @@ const withAnimation = Component => ({ ...props}) =>
                 trackIndex={Math.floor(index/128)} 
                 noteNumber={index%128}
                 key={index}
-                noteEventRef={noteEventRef} 
                 >
               <meshPhongMaterial attach="material" 
               opacity = {0.5} transparent={true}  

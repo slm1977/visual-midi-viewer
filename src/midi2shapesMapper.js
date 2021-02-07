@@ -26,9 +26,9 @@ const availablePrimitives =
 
 export const getMidiFilename = () =>
 {
-  //const midiFile = "bach_brandenburg_concerto_1_1";
+  const midiFile = "bach_brandenburg_concerto_1_1";
   //const midiFile = "bachwachauf";
-  const midiFile = "beethoven_opus10_1_format0"
+  //const midiFile = "beethoven_opus10_1_format0"
   //const midiFile = "scalacromatica"; //"bachwachauf";
   return midiFile;
 }

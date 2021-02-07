@@ -101,15 +101,9 @@ class MidiRenderer extends Component {
 
 handleMidiEvents = (event) => {
 
-  console.log(`Evento ${event.name} vel: ${event.velocity}`);
+  //console.log(`Evento ${event.name} vel: ${event.velocity}`);
 
-  if (event.name =="Program Change")
-  {
-    const channel = event.channel;
-    const instrument = event.value;
-    this.setChannelInstrument(channel,instrument);
-  }
-  else
+  
 if (event.name=="Note on")
 {
 
@@ -127,15 +121,13 @@ else if (event.name=="Note off")
 
   this.stopNote(event);
 }
-
-else if (event.name=="Program Change")
-{
-   console.log("Evento Program Change!");
-   console.log(event); 
-   this.setChannelInstrument(event.channel,event.value);
-}
-
-
+else
+if (event.name =="Program Change")
+  {
+    const channel = event.channel;
+    const instrument = event.value;
+    this.setChannelInstrument(channel,instrument);
+  }
 }
 
  startNote = (event) => {
@@ -151,7 +143,7 @@ else if (event.name=="Program Change")
     this.setNoteEnvelop(event, envelop);
 
     // eseguo il dispach del NoteOn
-  console.log(`Redux NoteOn:`, event);
+  //console.log(`Redux NoteOn:`, event);
    
    this.props.noteOn(event);
   }
@@ -165,7 +157,7 @@ else if (event.name=="Program Change")
     {
       noteEnvelop.cancel();
       this.setNoteEnvelop(event, null);
-    console.log(`Redux NoteOff:`, event);
+    //console.log(`Redux NoteOff:`, event);
      this.props.noteOff(event);
     }
     

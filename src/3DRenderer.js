@@ -1,13 +1,11 @@
 import React, { useState } from "react";
-import { Canvas, render, useFrame, useUpdate  } from 'react-three-fiber';
+import { Canvas } from 'react-three-fiber';
 import { Stars, TrackballControls, OrbitControls, MapControls } from '@react-three/drei'
 import TracksRenderer from './components/trackShapes';
 import MidiRenderer from './MidiRenderer';
 //import { Controls, useControl } from "react-three-gui"
 import { Provider } from 'react-redux'
 
-import { useSelector } from 'react-redux';
-import {selectors as MidiSelector} from './store/slices/midiSlice';
 
 const Renderer3D = (props) => {
 
@@ -16,7 +14,7 @@ const Renderer3D = (props) => {
 
 
   const updateNote = (infoEvent) => {
-      console.log(`Ultimo evento in 3Drenderer: ${infoEvent}`);
+      //console.log(`Ultimo evento in 3Drenderer: ${infoEvent}`);
       //console.log(infoEvent);
       noteEventRef.current = infoEvent;
     }
@@ -38,7 +36,7 @@ const Renderer3D = (props) => {
               <directionalLight position={[-1, 2, 4]} intensity={1}/>
               <directionalLight position={[1, -1, -2]} intensity={1}/>
           
-          <TracksRenderer songData={midiData} noteEventRef={noteEventRef} />
+          <TracksRenderer songData={midiData} />
 
           <Stars />
           <OrbitControls />
@@ -54,16 +52,5 @@ const Renderer3D = (props) => {
 }
 
 export default Renderer3D;
-
- /*
-
- //import {connect, useSelector } from 'react-redux';
-//import { createSelector } from '@reduxjs/toolkit'
-const mapStateToProps = state =>
-({
-  lastNote : state["lastNote"]["noteNumber"]
-})
-//export default connect(mapStateToProps)(Renderer3D)
-*/
 
 

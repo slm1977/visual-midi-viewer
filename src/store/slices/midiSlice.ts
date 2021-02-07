@@ -24,7 +24,7 @@ const currentSlice = createSlice({
     {  
      //console.log("Valore delle note001:", state);
      
-      console.log("Valore delle note traccia", (track));
+      //console.log("Valore delle note traccia", (track));
        const res = state.midiReducer.notes[track][noteNumber];
        return res==null ? 0 : res;
     }
