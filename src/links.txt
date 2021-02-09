@@ -1,9 +1,19 @@
+
+//Local storage and Redux store persist
+https://medium.com/@jrcreencia/persisting-redux-state-to-local-storage-f81eb0b90e7e
+
+//Local Storage and Session Storagehttps://www.robinwieruch.de/local-storage-react
+
 // Use States vs UseRef
 http://naomiajacobs.com/useRef-vs-useState/#:~:text=useState%20should%20be%20used%20when,just%20during%20its%20render%20cycle.
 
 //3D Primitives
 https://www.npmjs.com/package/@react-three/drei
 
+
+
+//Camera
+//https://threejsfundamentals.org/threejs/lessons/threejs-cameras.html
 
 // Computed properties
 //https://javascript.info/object#computed-properties

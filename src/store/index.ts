@@ -1,8 +1,9 @@
 import {configureStore, combineReducers} from '@reduxjs/toolkit';
 import { reducer as midiReducer } from './slices/midiSlice'
+import { reducer as songMapperReducer } from './slices/songMapperSlice'
 
 
-const rootReducer = combineReducers({midiReducer});
+const rootReducer = combineReducers({midiReducer, songMapperReducer});
 
 const store = configureStore({
     reducer: rootReducer

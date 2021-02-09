@@ -6,13 +6,16 @@ import MIDISounds from 'midi-sounds-react';
 import MidiPlayer from "midi-player-js";
 import axios from "axios";
 import {actions as MidiActions} from "./store/slices/midiSlice";
+import {actions as SongMapperActions} from "./store/slices/songMapperSlice";
 import {connect} from 'react-redux';
 import { IconContext } from "react-icons";
 import { FaPlay, FaPause, FaStop } from 'react-icons/fa';
+import { BsFillGearFill} from "react-icons/bs";
 import IconButton from '@material-ui/core/IconButton';
 import ReactTooltip from "react-tooltip";
 import moment from 'moment';
-import {getMidiFilename} from './midi2shapesMapper';
+import {getMidiUrl} from './midi2shapesMapper';
+import  SettingsModal from './components/AppSettings';
 
 //https://github.com/reduxjs/rtk-convert-todos-example
 
@@ -24,7 +27,7 @@ import {getMidiFilename} from './midi2shapesMapper';
 //https://elenatorro.com/jsday-2017-talk/
 //https://react-redux.js.org/using-react-redux/connect-mapdispatch
 
-const midi = (key) => `${process.env.PUBLIC_URL}/midi/${key}.mid`;
+
 const loadMidi = async (url) => {
   const { data } = await axios.get(url, { responseType: "arraybuffer" });
   return data;
@@ -46,7 +49,8 @@ class MidiRenderer extends Component {
                   channelInstrument: Array.from({length: 16}, (_, i) => 0),
                   // note envelopes for each note and each track
                   envelopes: null, //Array.from(Array(20), () => new Array(128)) // 16 tracks with 128 different notes available
-                  status: "Keyboard disconnected"
+                  status: "Keyboard disconnected",
+                  modalSettingsOpen : false
                 };
   }
 
@@ -61,10 +65,10 @@ class MidiRenderer extends Component {
 
  loadMidi = async () =>
  {
-     const fileName = getMidiFilename();
+     const fileUrl = getMidiUrl();
     // Load a MIDI file
     //console.log(Player);
-    this.midiPlayer.loadArrayBuffer(await loadMidi(midi(fileName)));
+    this.midiPlayer.loadArrayBuffer(await loadMidi(fileUrl));
     const {instruments} = this.midiPlayer;
     console.log("Lista strumenti");
     console.log(instruments);
@@ -76,11 +80,14 @@ class MidiRenderer extends Component {
     console.log(envelopes);
     const songDuration = moment.duration(Math.floor(this.midiPlayer.getSongTime()), "seconds");
     const numTracks = tracks.length;
-    this.setState({envelopes, songDuration, numTracks, fileName});
+    this.setState({envelopes, songDuration, numTracks, fileName: fileUrl});
+    
+    // redux dispatch 
+    this.props.setMidiUrl({"midiUrl": fileUrl });
 
     await this.loadInstruments(instruments);
    // note envelopes for each note and each track
-   this.props.onMidiLoaded({numTracks, instruments, fileName});
+   this.props.onMidiLoaded({numTracks, instruments, fileName: fileUrl});
   
  }
 
@@ -207,6 +214,7 @@ if (event.name =="Program Change")
   stopMidi = () =>  {
         console.log("Stop...");
         this.midiPlayer.stop();
+        this.props.resetAll();
         this.setState({isPaused: true});
     }
 
@@ -216,6 +224,18 @@ if (event.name =="Program Change")
         {
             ReactTooltip.rebuild();
         }
+    }
+
+
+    openSettings = () =>
+    {
+      console.log("Open settings");
+      this.setState({"modalSettingsOpen" : true});
+    }
+
+    closeSettings = () =>
+    {
+      this.setState({"modalSettingsOpen" : false});
     }
 
 
@@ -311,11 +331,23 @@ if (event.name =="Program Change")
                     <FaStop data-place="top" data-tip={"Stop midi"} />
                 </IconContext.Provider>
             </IconButton>
+
+            <IconButton  onClick={this.openSettings.bind(this)} >
+                <IconContext.Provider value={{ color:  `white`, 
+                                              className: "global-class-name" , size: "0.5em"}}>
+                    <BsFillGearFill data-place="top" data-tip={"Open settings"} />
+                </IconContext.Provider>
+            </IconButton>
+
             { fileReady && 
                 <div style={{display:'inline-block', margin:'10px'}}>
                 <Badge style={{color: "white"}} pill>Numero tracce: {numTracks}  (Durata:{formattedDuration} secs.)</Badge>
                 </div>
             }
+
+
+            <SettingsModal isOpen={this.state.modalSettingsOpen} onCloseSettings={
+              () => this.closeSettings()}/>
            
           
             <ReactTooltip/>  
@@ -333,7 +365,9 @@ if (event.name =="Program Change")
 
 const mapDispatchToProps = {
  noteOn : MidiActions.noteOn,
- noteOff : MidiActions.noteOff
+ noteOff : MidiActions.noteOff,
+ resetAll: MidiActions.resetAll,
+ setMidiUrl : SongMapperActions.setMidiUrl
 }
 // devo solo eseguire dei dispatch, non mi serve leggere lo stato dallo store
 export default connect(null, mapDispatchToProps)(MidiRenderer);

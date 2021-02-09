@@ -19,18 +19,25 @@ velocity: 74
 }
 */
 
+const availablePrimitivesDict = 
+  {Box, Cone, Sphere, Torus, Cylinder, Ring,
+   Tetrahedron,Icosahedron, Octahedron, Dodecahedron
+  }
+
 const availablePrimitives = 
   [Box, Cone, Sphere, Torus, Cylinder, Ring,
    Tetrahedron,Icosahedron, Octahedron, Dodecahedron
   ]
 
-export const getMidiFilename = () =>
+const midi = (key) => `${process.env.PUBLIC_URL}/midi/${key}.mid`;
+export const getMidiUrl = () =>
 {
-  const midiFile = "bach_brandenburg_concerto_1_1";
+  const midiFile = "bachartefuga1";
+  //const midiFile = "bach_brandenburg_concerto_1_1";
   //const midiFile = "bachwachauf";
   //const midiFile = "beethoven_opus10_1_format0"
   //const midiFile = "scalacromatica"; //"bachwachauf";
-  return midiFile;
+  return midi(midiFile);
 }
 
 export const getNotePosition = (noteEvent) =>
@@ -38,12 +45,13 @@ export const getNotePosition = (noteEvent) =>
   const note = noteEvent.noteNumber % 12;
   const octave = Math.floor(noteEvent.noteNumber/12) -1;
   const trackIndex = noteEvent.track;
-
+  console.log(`Track index: ${trackIndex}`)
   const noteDistanceFactor = 8;
   const octaveDistanceOffset = 5;
-  const posX = noteEvent.noteNumber /noteDistanceFactor +  trackIndex*5 ;
-
-  return [posX,1,1] // [posX,(octave+1)*octaveDistanceOffset ,1]
+  const posX =  5*trackIndex;
+  const posY = noteEvent.noteNumber 
+  const posZ = 1; //noteEvent.velocity/64
+  return [posX,posY,posZ] // [posX,(octave+1)*octaveDistanceOffset ,1]
 }
 
 
@@ -63,7 +71,7 @@ export const getNoteColor = (noteEvent) =>
 
 export const getNoteScale = (noteEvent) =>
 {
-  const scaleValue = noteEvent.velocity/64;
+  const scaleValue = 1 // noteEvent.velocity/64;
   return [scaleValue,scaleValue,scaleValue];
 }
 

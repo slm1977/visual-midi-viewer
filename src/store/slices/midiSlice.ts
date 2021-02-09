@@ -14,6 +14,9 @@ const currentSlice = createSlice({
       (state, action) => {
           state.notes[action.payload.track-1][action.payload.noteNumber] = 0
       },
+
+      resetAll:
+      (state,action) => {state.notes = Array.from(Array(20), () => new Array(128).fill(0))}
      } 
   });
 
