@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const currentSlice = createSlice({
     name: "songMapperSlice",
-    initialState: { midiUrl:"" , trackShape : [] as any , noteColor:{} as any},
+    initialState: { midiUrl:"" , trackShapes : [] as any , noteColors:{} as any},
     reducers: {
 
       setMidiUrl:
@@ -11,14 +11,24 @@ const currentSlice = createSlice({
         state.midiUrl = action.payload.midiUrl;
       },
 
+      setTrackShapes:
+      (state, action) => {
+          state.trackShapes = action.payload.trackShapes
+      },
+
       setTrackShape:
       (state, action) => {
-          state.trackShape[action.payload.track-1] = action.payload.shape
+          state.trackShapes[action.payload.track-1] = action.payload.trackShape
+      },
+
+      setNoteColors:
+      (state, action) => {
+          state.noteColors  = action.payload.noteColors;
       },
 
       setNoteColor:
       (state, action) => {
-          state.noteColor[action.payload.noteName] = action.payload.color;
+          state.noteColors[action.payload.noteName] = action.payload.noteColors;
       }
     } 
   });
@@ -34,12 +44,24 @@ const currentSlice = createSlice({
     {  
      
       //console.log("Valore delle note traccia", (track));
-       return state.songMapperReducer.notes[track-1];
+       return state.songMapperReducer.trackShapes[track-1];
+    },
+
+    getTrackShapes:(state: any) => 
+    {  
+     
+      //console.log("Valore delle note traccia", (track));
+       return state.songMapperReducer.trackShapes;
     },
 
     getNoteColor: (noteNumber : number) =>  (state: any) => 
       {  
         return state.songMapperReducer.noteColor[noteNumber];
+      },
+
+      getNoteColors: (state: any) => 
+      {  
+        return state.songMapperReducer.noteColors;
       }
   }
   

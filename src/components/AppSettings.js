@@ -2,14 +2,28 @@ import React, {useState} from 'react';
 import ColorPicker from './ColorPicker'
 import { Button, Input,  Modal, ModalHeader, ModalBody, ModalFooter, 
           Label,Form, FormFeedback, FormGroup} from 'reactstrap';
-
-import {useSelector} from 'react-redux'
-import {selectors as SongMapperSelector} from '../store/slices/songMapperSlice';
+ 
+import {useSelector, useDispatch} from 'react-redux'
+import {selectors as SongMapperSelector, actions as SongMapperActions} from '../store/slices/songMapperSlice';
  
 const SettingsModal = (props) =>
 {
   const currentMidiFile = useSelector(SongMapperSelector.getMidiUrl);
+  const [noteColors, setNoteColors] = useState([]);
+  const dispatch = useDispatch();
+
   const saveSettings = () => {
+    console.log("Saving note colors to Redux!");
+    dispatch(SongMapperActions.setNoteColors({noteColors}))
+
+    // Save colors to localStorage
+    try {
+      const serializedNoteColors = JSON.stringify(noteColors);
+      localStorage.setItem('noteColors', serializedNoteColors);
+    } catch {
+      console.log("Error saving note colors to localStorage");
+    }
+
     props.onCloseSettings();
   }
 
@@ -17,13 +31,14 @@ const SettingsModal = (props) =>
         props.onCloseSettings();
   }
 
-  const onColorChanged = (color:any) =>
+  const onColorChanged = (index) => (color) =>
   {
       console.log("Colore modificato");
+      let newNoteColors = [...noteColors];
+      newNoteColors[index] = color;
+      setNoteColors(newNoteColors);
+      
   }
-
-  const note= "DO";
-
 
   const renderTrackShapes = () => {
    return null;
@@ -57,7 +72,7 @@ const SettingsModal = (props) =>
             width:'100px',
            justifyContent: 'space-between' }}>
                 <Label style={{margin:'5px'}}>{c[0]}</Label>
-                <ColorPicker color={c[1]} onColorChanged={onColorChanged}/>
+                <ColorPicker color={c[1]} onColorChanged={onColorChanged(index)}/>
             </div>
          )
      })

@@ -6,9 +6,9 @@ import Renderer3D from './3DRenderer';
 import reportWebVitals from './reportWebVitals';
 
 import { Provider } from 'react-redux'
-import store from './store';
+import {configureStore} from './store';
 import App from './example10'
- 
+const store = configureStore({});
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
