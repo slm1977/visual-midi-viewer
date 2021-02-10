@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import ColorPicker from './ColorPicker'
 import { Button, Input,  Modal, ModalHeader, ModalBody, ModalFooter, 
           Label,Form, FormFeedback, FormGroup} from 'reactstrap';
@@ -6,13 +6,25 @@ import { Button, Input,  Modal, ModalHeader, ModalBody, ModalFooter,
 import {useSelector, useDispatch} from 'react-redux'
 import {selectors as SongMapperSelector, actions as SongMapperActions} from '../store/slices/songMapperSlice';
  
+
 const SettingsModal = (props) =>
 {
   const currentMidiFile = useSelector(SongMapperSelector.getMidiUrl);
+  const reduxNoteColors = useSelector(SongMapperSelector.getNoteColors);
   const [noteColors, setNoteColors] = useState([]);
   const dispatch = useDispatch();
+  console.log("Valore di reduxNoteColors:", reduxNoteColors);
+  
+  useEffect(()=>
+  {
+    console.log("Richiamato useEffect:", reduxNoteColors);
+    setNoteColors([...reduxNoteColors]);
+  },
+  [reduxNoteColors])
 
   const saveSettings = () => {
+
+
     console.log("Saving note colors to Redux!");
     dispatch(SongMapperActions.setNoteColors({noteColors}))
 
@@ -28,6 +40,7 @@ const SettingsModal = (props) =>
   }
 
   const ignoreSettings = () => {
+        setNoteColors(reduxNoteColors);
         props.onCloseSettings();
   }
 
@@ -72,7 +85,7 @@ const SettingsModal = (props) =>
             width:'100px',
            justifyContent: 'space-between' }}>
                 <Label style={{margin:'5px'}}>{c[0]}</Label>
-                <ColorPicker color={c[1]} onColorChanged={onColorChanged(index)}/>
+                <ColorPicker key={index} color={noteColors[index] || c[1]} onColorChanged={onColorChanged(index)}/>
             </div>
          )
      })
@@ -85,7 +98,7 @@ const SettingsModal = (props) =>
         <Form>
       <FormGroup>
                 <Label for="txtMidiFile">
-                    <b>Midi File Url</b>
+                    <b>Midi File Url!!!</b>
                     </Label>
                      <Input id="txtMidiFile"  type="text" 
                      valid={true} 
@@ -101,7 +114,7 @@ const SettingsModal = (props) =>
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gridGap: 20 }}>
-      <div style={{height:'100px', overflowY:"scroll"}}>
+      <div style={{height:'200px', overflowY:"scroll"}}>
              {renderNoteColors()}
             </div>
        
