@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const currentSlice = createSlice({
     name: "songMapperSlice",
-    initialState: { midiUrl:"" , trackShapes : [] as any , noteColors:{} as any},
+    initialState: { midiUrl:"" , trackShapes : [] as any , noteColors:[] as any},
     reducers: {
 
       setMidiUrl:
@@ -61,7 +61,12 @@ const currentSlice = createSlice({
 
       getNoteColors: (state: any) => 
       {  
+        //console.log("State di getNoteColors:", state);
+        if (state!=null)
         return state.songMapperReducer.noteColors;
+        else {console.log("State null!");
+           return null;
+      }
       }
   }
   

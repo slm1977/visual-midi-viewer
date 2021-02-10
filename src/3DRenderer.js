@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { Canvas } from 'react-three-fiber';
-import { Stars, TrackballControls, OrbitControls, MapControls } from '@react-three/drei'
+import { Stars,TrackballControls, OrbitControls, MapControls, Plane } from '@react-three/drei'
 import TracksRenderer from './components/trackShapes';
 import MidiRenderer from './MidiRenderer';
 //import { Controls, useControl } from "react-three-gui"
 import { Provider } from 'react-redux'
-
-
+//import CubeView from 'react-cubeview';
+//optional css file
+//import 'react-cubeview/lib/css/react-cubeview.css';
 const Renderer3D = (props) => {
 
   const noteEventRef = React.useRef();
@@ -19,6 +20,7 @@ const Renderer3D = (props) => {
       noteEventRef.current = infoEvent;
     }
 
+
    const loadMidiData = (midiData) =>
    {
      console.log("midi data loaded: setting state...");
@@ -29,17 +31,20 @@ const Renderer3D = (props) => {
         <div style={{borderStyle: "solid",  borderColor: "grey",
         'overflowY': 'auto', 'height': '100%'}}>
         <div style={{borderStyle: "solid",  borderColor: "grey",
-        'overflowY': 'auto', 'height': '80%'}}> 
+        'overflowY': 'auto', 'height': '80%'}}>  
+         
+
         <Canvas colorManagement camera={{ position: [0, 0, 11], fov: 25 }}>
+          
           <Provider store={props.store}>
             <ambientLight intensity={1} color="0xFFFFFF"/>
               <directionalLight position={[-1, 2, 4]} intensity={1}/>
               <directionalLight position={[1, -1, -2]} intensity={1}/>
           
           <TracksRenderer songData={midiData} />
-
+          <Plane args={[20, 20]} />
           <Stars />
-          <OrbitControls />
+          <TrackballControls noRotate={false}/>
           </Provider>
         </Canvas>
         </div>

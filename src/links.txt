@@ -1,4 +1,10 @@
 
+//Drei helpers
+https://github.com/pmndrs/drei
+
+//Visual 3D Controller
+https://github.com/lucascassiano/react-cubeview
+
 //Local storage and Redux store persist
 https://medium.com/@jrcreencia/persisting-redux-state-to-local-storage-f81eb0b90e7e
 

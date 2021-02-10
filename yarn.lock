@@ -9470,6 +9470,14 @@ react-color@^2.18.1, react-color@^2.19.3:
     reactcss "^1.2.0"
     tinycolor2 "^1.4.1"
 
+react-cubeview@^2.6.23:
+  version "2.6.23"
+  resolved "https://registry.yarnpkg.com/react-cubeview/-/react-cubeview-2.6.23.tgz#f547e205daddf7dee0c2e88b849da31188cb22e9"
+  integrity sha512-ewyCRd8PQBqGf5SInhHjP5Zw3k7xnU5mhHrI7VxBhwDYnnhxSnP+Bv0N0XGQHtmNP/JvQxbgfESw6OTKvSf+BA==
+  dependencies:
+    three "^0.88.0"
+    three-react-obj-loader "^1.0.4"
+
 react-dev-utils@^11.0.1:
   version "11.0.1"
   resolved "https://registry.yarnpkg.com/react-dev-utils/-/react-dev-utils-11.0.1.tgz#30106c2055acfd6b047d2dc478a85c356e66fe45"
@@ -11209,10 +11217,27 @@ text-table@0.2.0, text-table@^0.2.0:
   resolved "https://registry.yarnpkg.com/text-table/-/text-table-0.2.0.tgz#7f5ee823ae805207c00af2df4a84ec3fcfa570b4"
   integrity sha1-f17oI66AUgfACvLfSoTsP8+lcLQ=
 
+three-react-obj-loader@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/three-react-obj-loader/-/three-react-obj-loader-1.0.4.tgz#6542dfbc96f565e4bf9e333699bf1abed0840def"
+  integrity sha1-ZULfvJb1ZeS/njM2mb8avtCEDe8=
+  dependencies:
+    three "^0.87.1"
+
 three@^0.124.0:
   version "0.124.0"
   resolved "https://registry.yarnpkg.com/three/-/three-0.124.0.tgz#14ab1a26ba6c56e51190e1b55695cd3c1e69ea55"
   integrity sha512-ROXp1Ly7YyF+jC910DQyAWj++Qlw2lQv0qwYLNQwdDbjk4bsOXAfGO92wYTMPNei1GMJUmCxSxc3MjGBTS09Rg==
+
+three@^0.87.1:
+  version "0.87.1"
+  resolved "https://registry.yarnpkg.com/three/-/three-0.87.1.tgz#466a34edc4543459ced9b9d7d276b65216fe2ba8"
+  integrity sha1-Rmo07cRUNFnO2bnX0na2Uhb+K6g=
+
+three@^0.88.0:
+  version "0.88.0"
+  resolved "https://registry.yarnpkg.com/three/-/three-0.88.0.tgz#4256c2fc38e4fb23a0d23eba2b6cce4df8e466d5"
+  integrity sha1-QlbC/Djk+yOg0j66K2zOTfjkZtU=
 
 throat@^5.0.0:
   version "5.0.0"

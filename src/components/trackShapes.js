@@ -5,6 +5,9 @@ import * as THREE from 'three';
 
 import { useSelector } from 'react-redux';
 import {selectors as MidiSelector} from '../store/slices/midiSlice';
+import {selectors as SongMapperSelector} from "../store/slices/songMapperSlice"
+
+
 
 const withAnimation = Component => ({ ...props}) => 
 {
@@ -12,9 +15,9 @@ const withAnimation = Component => ({ ...props}) =>
   //const { camera } = useThree()
   const shapeRef = useRef();
 
-  const {trackIndex,noteNumber} = props;
-
   
+
+  const {trackIndex,noteNumber} = props;
 
   const noteVelocity = useSelector(MidiSelector.getNoteVelocity(trackIndex, noteNumber));
   const noteEvent = {noteNumber, track:trackIndex, velocity: noteVelocity} ;
@@ -23,10 +26,11 @@ const withAnimation = Component => ({ ...props}) =>
   useFrame((state,delta) => {
         //console.log("Chiamato useFrame!");
         if (shapeRef.current==null) return;
-
+        
       if (noteVelocity>0)
           {  
             const noteScale = getNoteScale(noteEvent);
+            //console.log("Note scale:", noteScale);
               shapeRef.current.scale.x = noteScale[0];
               shapeRef.current.scale.y = noteScale[1];
               shapeRef.current.scale.z = noteScale[2];
@@ -60,6 +64,7 @@ const withAnimation = Component => ({ ...props}) =>
     
     const filenameRef = useRef("");
     const trackShapesRef = useRef([]);
+    const noteColors = useSelector(SongMapperSelector.getNoteColors);
 
     //const testS = useSelector(MidiSelector.getNoteVelocity(3, 48));
     //console.log("NoteSelector:", testS);
@@ -98,7 +103,7 @@ const withAnimation = Component => ({ ...props}) =>
       return trackShapesRef.current.map((TrackShape, index) =>
       (
         // una TrackShape per ciascuna nota Midi
-       
+        
           <TrackShape                          
                 trackIndex={Math.floor(index/128)} 
                 noteNumber={index%128}
@@ -107,7 +112,7 @@ const withAnimation = Component => ({ ...props}) =>
               <meshPhongMaterial attach="material" 
               opacity = {0.5} transparent={true}  
               side =  {THREE.DoubleSide}
-              color={ getNoteColorByIndex(index%128, Math.floor(index/128))} />
+              color={ noteColors[(index%128)%12]} />
           </TrackShape>
              
         ))

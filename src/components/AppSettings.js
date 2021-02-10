@@ -98,7 +98,7 @@ const SettingsModal = (props) =>
         <Form>
       <FormGroup>
                 <Label for="txtMidiFile">
-                    <b>Midi File Url!!!</b>
+                    <b>Midi File Url</b>
                     </Label>
                      <Input id="txtMidiFile"  type="text" 
                      valid={true} 
