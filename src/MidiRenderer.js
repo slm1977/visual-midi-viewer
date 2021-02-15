@@ -11,6 +11,7 @@ import {connect} from 'react-redux';
 import { IconContext } from "react-icons";
 import { FaPlay, FaPause, FaStop } from 'react-icons/fa';
 import { BsFillGearFill} from "react-icons/bs";
+import MidiFilePicker from './components/MidiFilePicker';
 import IconButton from '@material-ui/core/IconButton';
 import ReactTooltip from "react-tooltip";
 import moment from 'moment';
@@ -59,16 +60,39 @@ class MidiRenderer extends Component {
  {
    // Initialize player and register event handler
    this.midiPlayer = new MidiPlayer.Player(this.handleMidiEvents);
-  await this.loadMidi();
+  //await this.loadMidi();
   this.startListening();
  }
 
- loadMidi = async () =>
+ fileMidiLoaded = (content) =>
+    {
+
+      //console.log("Midi file content:", content);
+      if (content==null) return;
+       if (this.midiPlayer!=null)
+        { //JSON.stringify(content).trim().slice(1,-1)
+          //const midiContent = this.str2ab8(JSON.stringify(content).trim().slice(1,-1));
+          console.log("MidiContent Buffer:",content)
+          //this.midiPlayer.loadArrayBuffer(midiContent);
+          this.loadMidi(content, "to be implemented");
+        }
+        
+      //this.setState({"modalSettingsOpen" : true});
+    }
+
+ loadMidi = async (midiContent, fileUrl) =>
  {
-     const fileUrl = getMidiUrl();
+   if (midiContent==null)
+   {
+     fileUrl = getMidiUrl();
     // Load a MIDI file
     //console.log(Player);
     this.midiPlayer.loadArrayBuffer(await loadMidi(fileUrl));
+   }
+   else
+   this.midiPlayer.loadArrayBuffer(midiContent);
+
+     
     const {instruments} = this.midiPlayer;
     console.log("Lista strumenti");
     console.log(instruments);
@@ -226,6 +250,27 @@ if (event.name =="Program Change")
         }
     }
 
+    str2ab = (str) => {
+      var buf = new ArrayBuffer(str.length*2); // 2 bytes for each char
+      var bufView = new Uint16Array(buf);
+      for (var i=0, strLen=str.length; i < strLen; i++) {
+        bufView[i] = str.charCodeAt(i);
+      }
+      return buf;
+    }
+
+
+    str2ab8 = (str) => {
+      var buf = new ArrayBuffer(str.length); // 2 bytes for each char
+      var bufView = new Uint8Array(buf);
+      for (var i=0, strLen=str.length; i < strLen; i++) {
+        bufView[i] = str.charCodeAt(i);
+      }
+      return buf;
+    }
+
+
+    
 
     openSettings = () =>
     {
@@ -338,6 +383,9 @@ if (event.name =="Program Change")
                     <BsFillGearFill data-place="top" data-tip={"Open settings"} />
                 </IconContext.Provider>
             </IconButton>
+
+            <MidiFilePicker onFileLoaded={(content) =>this.fileMidiLoaded(content)}/>
+            
 
             { fileReady && 
                 <div style={{display:'inline-block', margin:'10px'}}>

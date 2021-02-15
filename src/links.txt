@@ -1,4 +1,24 @@
 
+//Local Files upload
+https://stackoverflow.com/questions/37457128/react-open-file-browser-on-click-a-div
+
+//Reading as ArrayBuffer
+https://github.com/nfroidure/midifile/issues/30
+
+// String to arrayBuffer
+https://developers.google.com/web/updates/2012/06/How-to-convert-ArrayBuffer-to-and-from-String
+
+
+// Game 2D 
+https://dev.to/flagrede/making-a-2d-rpg-game-with-react-tree-fiber-4af1
+
+
+//3D helpers
+https://blog.prototypr.io/your-3d-wilderness-bearings-threejs-helpers-in-react-three-fiber-64770d59b222
+
+//Tutorial
+https://www.digitalocean.com/community/tutorials/react-react-with-threejs
+
 //Drei helpers
 https://github.com/pmndrs/drei
 
