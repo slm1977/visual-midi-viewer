@@ -72,6 +72,7 @@ class MidiRenderer extends Component {
        if (this.midiPlayer!=null)
         { //JSON.stringify(content).trim().slice(1,-1)
           //const midiContent = this.str2ab8(JSON.stringify(content).trim().slice(1,-1));
+          this.stopMidi();
           console.log("MidiContent Buffer:",content)
           //this.midiPlayer.loadArrayBuffer(midiContent);
           this.loadMidi(content, "to be implemented");
