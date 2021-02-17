@@ -1,3 +1,7 @@
+// React midi-player
+https://www.npmjs.com/package/midi-player-js
+http://grimmdude.com/MidiPlayerJS/docs/ 
+
 
 //Local Files upload
 https://stackoverflow.com/questions/37457128/react-open-file-browser-on-click-a-div

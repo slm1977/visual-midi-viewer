@@ -17,7 +17,9 @@ import ReactTooltip from "react-tooltip";
 import moment from 'moment';
 import {getMidiUrl} from './midi2shapesMapper';
 import  SettingsModal from './components/AppSettings';
-
+import {  FormattedTime } from 'react-player-controls'
+import Slider from 'rc-slider';
+import 'rc-slider/assets/index.css';
 //https://github.com/reduxjs/rtk-convert-todos-example
 
 //https://github.com/surikov/midi-sounds-react-examples/blob/master/examples/midi-sounds-example10/src/App.js
@@ -42,7 +44,9 @@ class MidiRenderer extends Component {
     console.log("START");
     console.log(props);
     this.state = {fileReady: false,
-                  songDuration: 49,
+                  isSliderMoving: false,
+                  songDuration: 0,
+                  songPosition: 0,
                   isPaused: true,
                   // instruments to be loaded
                   instruments:[], 
@@ -103,7 +107,7 @@ class MidiRenderer extends Component {
     let envelopes = Array.from(Array(tracks.length), () => new Array(128));
     console.log(`Inizializzo l'envelopes:`);
     console.log(envelopes);
-    const songDuration = moment.duration(Math.floor(this.midiPlayer.getSongTime()), "seconds");
+    const songDuration = this.midiPlayer.getSongTime() //moment.duration(Math.floor(this.midiPlayer.getSongTime()), "seconds");
     const numTracks = tracks.length;
     this.setState({envelopes, songDuration, numTracks, fileName: fileUrl});
     
@@ -337,17 +341,40 @@ if (event.name =="Program Change")
       }
     }
 
+    onStartMidiSliderChanged = (newValue) =>
+    {
+      const wasPlaying = this.midiPlayer.isPlaying();
+      this.pauseMidi();
+      console.log(`New Midi Slider value:${newValue}`);
+      this.setState({isSliderMoving:true, wasPlaying, songPosition:newValue});
+    }
+
+    onEndMidiSliderChanged = (newValue) =>
+    {
+      console.log(`onEndMidiSliderChanged: ${newValue}`);
+       //console.log(`instruments: ${instruments}`);
+   //const midiPosition = this.midiPlayer==null? 0 :
+    //(this.state.songDuration -  this.midiPlayer.getSongTimeRemaining());
+    this.setState({isSliderMoving:false, songPosition:newValue}, () =>
+    {
+      this.midiPlayer.skipToSeconds(newValue);
+      if (this.state.wasPlaying) { this.setState({wasPlaying:false});
+      this.playMidi();}
+    })
+    
+
+
+    }
     // ----------------------------
  
   
   render() {
 
-    const {instruments, envelopes, isPaused, songDuration, numTracks} = this.state;
+    const {instruments, envelopes, isPaused, songPosition, songDuration, numTracks} = this.state;
     const fileReady = instruments!=null && instruments.length>0 && envelopes!=null;
     const formattedDuration = moment(songDuration).format("HH:MM:SS") //  moment.duration(songDuration, "seconds")
     
-    //console.log(`instruments: ${instruments}`);
-    
+  
     return (
      
       <div className="App">
@@ -390,7 +417,22 @@ if (event.name =="Program Change")
 
             { fileReady && 
                 <div style={{display:'inline-block', margin:'10px'}}>
-                <Badge style={{color: "white"}} pill>Numero tracce: {numTracks}  (Durata:{formattedDuration} secs.)</Badge>
+                <Badge style={{color: "white"}} pill>Numero tracce: {numTracks}  
+                {'   '}</Badge>
+                 
+                   
+               
+                <Slider min={0} max={songDuration} 
+                value = {
+                  this.state.isSliderMoving ? songPosition :
+                  this.state.songDuration - this.midiPlayer.getSongTimeRemaining()}
+                onBeforeChange={(value) => this.onStartMidiSliderChanged(value)} 
+                onChange= {(value) => {this.setState({songPosition:value})}}
+                onAfterChange={(value) => this.onEndMidiSliderChanged(value)} 
+                />
+
+                <FormattedTime style={{ "fontSize":"1em", "color":"white"}}
+                numSeconds={Math.floor(this.midiPlayer.getSongTime())}/>
                 </div>
             }
 

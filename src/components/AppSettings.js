@@ -13,7 +13,7 @@ const SettingsModal = (props) =>
   const reduxNoteColors = useSelector(SongMapperSelector.getNoteColors);
   const [noteColors, setNoteColors] = useState([]);
   const dispatch = useDispatch();
-  console.log("Valore di reduxNoteColors:", reduxNoteColors);
+  //console.log("Valore di reduxNoteColors:", reduxNoteColors);
   
   useEffect(()=>
   {
@@ -81,11 +81,11 @@ const SettingsModal = (props) =>
      {
          return(
        
-            <div style={{display:'flex', padding:'5px', flexDirection: 'row', 
+            <div key={index} style={{display:'flex', padding:'5px', flexDirection: 'row', 
             width:'100px',
            justifyContent: 'space-between' }}>
-                <Label style={{margin:'5px'}}>{c[0]}</Label>
-                <ColorPicker key={index} color={noteColors[index] || c[1]} onColorChanged={onColorChanged(index)}/>
+                <Label  style={{margin:'5px'}}>{c[0]}</Label>
+                <ColorPicker color={noteColors[index] || c[1]} onColorChanged={onColorChanged(index)}/>
             </div>
          )
      })
