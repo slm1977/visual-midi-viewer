@@ -27,7 +27,7 @@ const availablePrimitivesDict =
 
 const availablePrimitives = 
   [Box, Cone, Sphere, Torus, Cylinder, Ring,
-   Tetrahedron,Icosahedron, Octahedron, Dodecahedron
+   Tetrahedron,Icosahedron, Octahedron, Dodecahedron, Cylinder, Sphere
   ]
 
 const midi = (key) => `${process.env.PUBLIC_URL}/midi/${key}.mid`;
