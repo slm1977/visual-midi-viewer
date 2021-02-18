@@ -2,6 +2,9 @@
 https://www.npmjs.com/package/midi-player-js
 http://grimmdude.com/MidiPlayerJS/docs/ 
 
+//Reactstrp Tabs
+https://gist.github.com/FMCorz/b2d2f4cf6839c4f7402fecd32c84b680
+
 
 //Local Files upload
 https://stackoverflow.com/questions/37457128/react-open-file-browser-on-click-a-div

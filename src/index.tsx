@@ -2,17 +2,17 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Renderer3D from './3DRenderer';
+
 import reportWebVitals from './reportWebVitals';
 
 import { Provider } from 'react-redux'
 import {configureStore} from './store';
-import App from './example10'
+import AppContainer from './AppContainer'
 const store = configureStore({});
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
-      <Renderer3D store={store}/>
+      <AppContainer store={store}/>
     </Provider>
   </React.StrictMode>,
   document.getElementById('root')

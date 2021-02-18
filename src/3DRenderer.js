@@ -33,7 +33,7 @@ const Renderer3D = (props) => {
     
     return(
         <div style={{borderStyle: "solid",  borderColor: "grey",
-        'overflowY': 'auto', 'height': '100%'}}>
+        'overflowY': 'auto', 'height': '500px'}}>
 
         <div style={{borderStyle: "solid",  borderColor: "grey",
         'overflowY': 'auto', 'height': '80%'}}>  
