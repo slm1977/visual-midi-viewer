@@ -47,6 +47,7 @@ class MidiRenderer extends Component {
                   isSliderMoving: false,
                   songDuration: 0,
                   songPosition: 0,
+                  wasPlaying: false,
                   isPaused: true,
                   // instruments to be loaded
                   instruments:[], 
@@ -117,6 +118,9 @@ class MidiRenderer extends Component {
     await this.loadInstruments(instruments);
    // note envelopes for each note and each track
    this.props.onMidiLoaded({numTracks, instruments, fileName: fileUrl});
+   // patch for midislider
+   this.playMidi();
+   setTimeout(() => { this.stopMidi();}, 100);
   
  }
 
@@ -229,9 +233,10 @@ if (event.name =="Program Change")
   }
 
   playMidi = () => {
+        this.props.resetAll();
         console.log("Playing...");
         this.midiPlayer.play();
-        this.setState({isPaused: false});
+        this.setState({isPaused: false, isSliderMoving:false});
     }
 
   pauseMidi = () => {
@@ -343,9 +348,9 @@ if (event.name =="Program Change")
 
     onStartMidiSliderChanged = (newValue) =>
     {
-      const wasPlaying = this.midiPlayer.isPlaying();
+      const wasPlaying = !this.state.isPaused;
       this.pauseMidi();
-      console.log(`New Midi Slider value:${newValue}`);
+      console.log(` onStartMidi Slider value:${newValue} wasPlaying:${wasPlaying}`);
       this.setState({isSliderMoving:true, wasPlaying, songPosition:newValue});
     }
 
@@ -355,11 +360,12 @@ if (event.name =="Program Change")
        //console.log(`instruments: ${instruments}`);
    //const midiPosition = this.midiPlayer==null? 0 :
     //(this.state.songDuration -  this.midiPlayer.getSongTimeRemaining());
-    this.setState({isSliderMoving:false, songPosition:newValue}, () =>
+    this.setState({songPosition:newValue}, () =>
     {
       this.midiPlayer.skipToSeconds(newValue);
-      if (this.state.wasPlaying) { this.setState({wasPlaying:false});
-      this.playMidi();}
+      if (this.state.wasPlaying) { 
+        this.setState({wasPlaying:false}, () => this.playMidi()); 
+        }
     })
     
 
