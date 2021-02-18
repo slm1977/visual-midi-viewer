@@ -20,12 +20,14 @@ velocity: 74
 }
 */
 
-const availablePrimitivesDict = 
+export const availablePrimitivesDict = 
   {Box, Cone, Sphere, Torus, Cylinder, Ring,
    Tetrahedron,Icosahedron, Octahedron, Dodecahedron
   }
 
-const availablePrimitives = 
+  const availablePrimitives0 = [Sphere];
+  
+export const availablePrimitives = 
   [Box, Cone, Sphere, Torus, Cylinder, Ring,
    Tetrahedron,Icosahedron, Octahedron, Dodecahedron, Cylinder, Sphere
   ]

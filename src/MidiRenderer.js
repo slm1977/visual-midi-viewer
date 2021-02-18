@@ -118,8 +118,8 @@ class MidiRenderer extends Component {
    // note envelopes for each note and each track
    this.props.onMidiLoaded({numTracks, instruments, fileName: fileUrl});
    // patch for midislider
-   this.playMidi();
-   setTimeout(() => { this.stopMidi();}, 500);
+   //this.playMidi();
+   //setTimeout(() => { this.stopMidi();}, 500);
   
  }
 

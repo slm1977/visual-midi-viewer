@@ -5,7 +5,7 @@ import { Button, Input,  Modal, ModalHeader, ModalBody, ModalFooter,
  
 import {useSelector, useDispatch} from 'react-redux'
 import {selectors as SongMapperSelector, actions as SongMapperActions} from '../store/slices/songMapperSlice';
- 
+import MidiTracksTable from './MidiTracksTable'
 
 const SettingsModal = (props) =>
 {
@@ -53,13 +53,6 @@ const SettingsModal = (props) =>
       
   }
 
-  const renderTrackShapes = () => {
-   return null;
-   /*
-   (<option value="1">1 ora</option>
-   <option value="2">2 ore</option>)
-    */
-  }
 
   const renderNoteColors = () =>
   {
@@ -118,13 +111,8 @@ const SettingsModal = (props) =>
              {renderNoteColors()}
             </div>
        
-        <div>
-          <Input id="selectDuration" 
-                     
-                    value={`Cube`}
-                    type="select">
-                   {renderTrackShapes()}
-              </Input> 
+        <div style={{height:'200px', overflowY:"scroll"}}>
+          <MidiTracksTable numTracks={10} />
         </div>
       </div>
             
