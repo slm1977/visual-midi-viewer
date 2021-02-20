@@ -1791,6 +1791,18 @@
     "@svgr/plugin-svgo" "^5.4.0"
     loader-utils "^2.0.0"
 
+"@tawaship/canvas-recorder@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@tawaship/canvas-recorder/-/canvas-recorder-1.0.1.tgz#b34ac9abeaded2d41f1e307312a3b982d271d14f"
+  integrity sha512-J02vXU0t8eUXnt3Praw5crZW0x5RCWDUUrbp4XimnGVQrZPsfg3f2cuw0VWKD4iMghXegTFuPjxT4NE4Mr06Yg==
+  dependencies:
+    "@tawaship/emitter" "^3.0.0"
+
+"@tawaship/emitter@^3.0.0":
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/@tawaship/emitter/-/emitter-3.1.1.tgz#b6360bc2853f3fc8a3627a089c3e3565404d49d8"
+  integrity sha512-hKkgZmsCSLD4kvrhYHed0BhNZCZxAwPeGqB+ulCpbVU4PWw5D0wveJR7+XEPN9L6lWC91bgY5JFW2EnN5+Zttg==
+
 "@testing-library/dom@^7.28.1":
   version "7.29.2"
   resolved "https://registry.yarnpkg.com/@testing-library/dom/-/dom-7.29.2.tgz#6cba65d961d8b36d621a98caa8537444075fb42e"
@@ -9633,6 +9645,11 @@ react-lifecycles-compat@^3.0.0, react-lifecycles-compat@^3.0.4:
   resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
   integrity sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==
 
+react-media-recorder@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/react-media-recorder/-/react-media-recorder-1.4.0.tgz#e72d366bd87157d634949bdc42300027c78a7aa7"
+  integrity sha512-3lc2LsS6TUG03tmbVd9Fnh7l1+YtbGy5Z+CYQA8zkJuGdroarLXxFExPXu0RqLFbomedD+Axp3pKuNrfIBmHtw==
+
 react-merge-refs@^1.0.0, react-merge-refs@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/react-merge-refs/-/react-merge-refs-1.1.0.tgz#73d88b892c6c68cbb7a66e0800faa374f4c38b06"
@@ -9647,6 +9664,11 @@ react-modal@^3.1.10:
     prop-types "^15.5.10"
     react-lifecycles-compat "^3.0.0"
     warning "^4.0.3"
+
+react-multimedia-capture@^1.2.4:
+  version "1.2.4"
+  resolved "https://registry.yarnpkg.com/react-multimedia-capture/-/react-multimedia-capture-1.2.4.tgz#ab9d2c5740fb104c55d69c4fa748d366cbe5c1c0"
+  integrity sha512-9sdJDtgM0yoJyQXUXPw8NdvjsaXnEPwMmA4dMHr8i8ZpLXoaFXUT+lvcM1UQaQ1+oOldWpwSPoG5zIQXpUueQw==
 
 react-popper@^1.3.6:
   version "1.3.7"
@@ -9932,6 +9954,11 @@ readdirp@~3.5.0:
   integrity sha512-cMhu7c/8rdhkHXWsY+osBhfSy0JikwpHK/5+imo+LpeasTF8ouErHrlYkwT0++njiyuDvc7OFY5T3ukvZ8qmFQ==
   dependencies:
     picomatch "^2.2.1"
+
+record-screen@^3.18.0:
+  version "3.18.0"
+  resolved "https://registry.yarnpkg.com/record-screen/-/record-screen-3.18.0.tgz#b7cb39105c9b3cdf155060bd45d75c8d38e3dbff"
+  integrity sha512-bY1QBIIyzVRQmkdPnDyd8hObsW3waX+BQWga8sMbD8Aq34574XcVobmFVWM8VE6eXq/fQYCVNmCotU/ySic62w==
 
 recursive-readdir@2.2.2:
   version "2.2.2"

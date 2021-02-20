@@ -1,8 +1,15 @@
+
+//Camera Dolly example
+https://codesandbox.io/s/r3f-particles-i-q4d2v
+
+//React media/screen recorder
+https://www.npmjs.com/package/react-media-recorder
+
 // React midi-player
 https://www.npmjs.com/package/midi-player-js
 http://grimmdude.com/MidiPlayerJS/docs/ 
 
-//Reactstrp Tabs
+//Reactstrap Tabs
 https://gist.github.com/FMCorz/b2d2f4cf6839c4f7402fecd32c84b680
 
 

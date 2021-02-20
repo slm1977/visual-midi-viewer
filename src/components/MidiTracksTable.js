@@ -32,7 +32,7 @@ const MidiTracksTable = (props) =>
     }
 
         
-    return (<Table>
+    return (<Table  style={{color:"white"}}>
         <thead>
         <tr>
           <th>Track Name</th>

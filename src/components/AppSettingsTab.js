@@ -74,7 +74,7 @@ const AppSettings  = (props) =>
      {
          return(
        
-            <div key={index} style={{display:'flex', padding:'5px', flexDirection: 'row', 
+            <div key={index} style={{color:"white", display:'flex', padding:'5px', flexDirection: 'row', 
             width:'100px',
            justifyContent: 'space-between' }}>
                 <Label  style={{margin:'5px'}}>{c[0]}</Label>
