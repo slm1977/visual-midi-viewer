@@ -1,6 +1,6 @@
 import React, { useState, useEffect} from "react";
 import { Canvas, useFrame, useThree } from 'react-three-fiber';
-import { Stars,TrackballControls, MapControls, Plane } from '@react-three/drei'
+import { Stars,TrackballControls, OrbitControls, MapControls, Plane } from '@react-three/drei'
 import TracksRenderer from './components/trackShapes';
 import MidiRenderer from './MidiRenderer';
 //import { Controls, useControl } from "react-three-gui"
@@ -13,47 +13,14 @@ import { Button } from 'reactstrap';
 //optional css file
 //import 'react-cubeview/lib/css/react-cubeview.css';
 
-const  Dolly = (props) => {
-  // This one makes the camera move in and out
-  useFrame(({ clock, camera }) => {
-    camera.position.z = 50 + Math.sin(clock.getElapsedTime()) * 30
-  })
-  return null
-}
-
-const CameraManager = (props) => {
-
-  const [resetRequest, setResetRequest] = useState(false);
-
-  useEffect(()=>{
-     if (!resetRequest && props.resetRequest) 
-     {
-       console.log("CameraManager USE EFFECT");
-       setResetRequest(true);
-       resetCameraPosition();
-     }
-  }, [props.resetRequest])
-  
-  const { scene, gl, size, camera } = useThree();
-  const resetCameraPosition = () =>
-  {
-    camera.position.x = 0;
-    camera.position.y = 0;
-    camera.position.z = 0;
-    
-    props.onCameraReset();
-    setResetRequest(false);
-  }
-   return null // <Button color="primary" onClick={() => resetCameraPosition()}>reset</Button>
-}
 
 const Renderer3D = (props) => {
 
   
-
+  const controlsRef  = React.useRef(); 
   const noteEventRef = React.useRef();
   const [midiData, setmidiData] = useState({});
-  const [cameraResetRequest, setCameraResetRequest] = useState(false)
+  const [cameraResetRequest, setCameraResetRequest] = useState(0)
   const canvasRef = React.useRef();
 
   const startRecording =  ()=> {
@@ -115,23 +82,29 @@ const Renderer3D = (props) => {
         
           
           <Provider store={props.store}>
+            {
+              /*
             <ambientLight intensity={1} color="0xFFFFFF"/>
-              <directionalLight position={[-1, 2, 4]} intensity={1}/>
-              <directionalLight position={[1, -1, -2]} intensity={1}/>
+             */}
+            <directionalLight position={[-1, 2, 4]} intensity={1}/>
+            <directionalLight position={[1, -1, -2]} intensity={1}/>
+           
               <pointLight color="indianred" />
               <pointLight position={[10, 10, -10]} color="orange" />
               <pointLight position={[-10, -10, 10]} color="lightblue" />
           <TracksRenderer songData={midiData} />
           {/*<Plane args={[20, 20]} /> */}
           <Stars />
-          <TrackballControls noRotate={false}/>
+          
+          <OrbitControls ref={controlsRef} enabled={cameraResetRequest==0}/>
+          
           </Provider>
           <axesHelper args={[20, 20,20]} />
-          <CameraManager resetRequest={cameraResetRequest} onCameraReset={() => setCameraResetRequest(false)}/>
         </Canvas>
         </div>
         <div style={{borderStyle: "solid",  borderColor: "grey", 'height': '20%'}}>  
-        <Button onClick={() => setCameraResetRequest(true)}>Reset Camera</Button>
+        <Button onClick={() => controlsRef.current.reset()}>Reset </Button>
+        <Button onClick={() => controlsRef.current.saveState()}>Memo </Button>
            <MidiRenderer onMidiLoaded={loadMidiData} onNoteEvent={updateNote} />)
       </div>
 
