@@ -3,7 +3,8 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const currentSlice = createSlice({
     name: "songMapperSlice",
-    initialState: { midiUrl:"" , trackShapes : [] as any , noteColors:[] as any},
+    initialState: { midiUrl:"" , trackShapes : [] as any , 
+    noteColors:Array(12).fill('rgb(55,120,40)') as any},
     reducers: {
 
       setMidiUrl:
@@ -23,6 +24,7 @@ const currentSlice = createSlice({
 
       setNoteColors:
       (state, action) => {
+           console.log("Richiamato setNoteColors on:", action.payload.noteColors);
           state.noteColors  = action.payload.noteColors;
       },
 

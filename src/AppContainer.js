@@ -32,7 +32,7 @@ export default function AppContainer(props) {
               <Renderer3D store={props.store}/>
           </TabPane>
           <TabPane tabId="2">
-              <AppSettings/>
+              <AppSettings store={props.store}/>
           </TabPane>
           {/*
           <TabPane tabId="3">

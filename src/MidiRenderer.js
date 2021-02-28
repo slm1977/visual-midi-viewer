@@ -297,9 +297,12 @@ if (event.name =="Program Change")
 
     midiOnMIDImessage = (event) => {
       console.log("EVENTO MIDI", event);
+      // se non ho caricato nessuno strumento non ho nulla da suonare con la tastiera
+      if (this.state.envelopes==null) return;
+
       var data = event.data;
       var cmd = data[0] >> 4;
-      var channel = data[0] & 0xf;
+      var channel = 1 //data[0] & 0xf;
       var type = data[0] & 0xf0;
       var pitch = data[1];
       var velocity = data[2];
@@ -307,7 +310,7 @@ if (event.name =="Program Change")
       switch (type) {
       case 144:
         if (velocity>0) this.startNote({"track": 1, velocity, "noteNumber" : pitch,
-                                    "channel" :1, "tick":0, "name": "Note on"});
+                                    "channel" :channel, "tick":0, "name": "Note on"});
         break;
       case 128:
         this.keyUp(pitch);
@@ -315,7 +318,7 @@ if (event.name =="Program Change")
       }
   
       if (velocity==0) this.stopNote({"track": 1, velocity, "noteNumber" : pitch,
-      "channel" :1, "tick":0, "name": "Note off"});
+      "channel" :channel, "tick":0, "name": "Note off"});
     }
     onMIDIOnStateChange = (event) => {
       this.setState({status:event.port.manufacturer + ' ' + event.port.name + ' ' + event.port.state});
@@ -336,7 +339,7 @@ if (event.name =="Program Change")
     }
 
     startListening = () => {
-      console.log("Inizio ad ascaoltare le connessioni midi");
+      console.log("Inizio ad ascoltare le connessioni midi");
       this.setState({status:'waiting'});
       if (navigator.requestMIDIAccess) {
         navigator.requestMIDIAccess().then(this.requestMIDIAccessSuccess.bind(this), this.requestMIDIAccessFailure.bind(this));
@@ -376,7 +379,7 @@ if (event.name =="Program Change")
   render() {
 
     const {instruments, envelopes, isPaused, songPosition, songDuration, numTracks} = this.state;
-    const fileReady = instruments!=null && instruments.length>0 && envelopes!=null;
+    const fileReady = this.midiPlayer!=null && instruments!=null && instruments.length>0 && envelopes!=null;
     const formattedDuration = moment.utc(moment.duration(songDuration*1000,'milliseconds').asMilliseconds()).format("HH:mm:ss");//  moment.duration(songDuration, "seconds")
     
     const currentSongPosition = !fileReady ? 0 : (this.state.isSliderMoving ? songPosition :

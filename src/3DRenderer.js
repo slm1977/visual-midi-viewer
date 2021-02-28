@@ -20,7 +20,6 @@ const Renderer3D = (props) => {
   const controlsRef  = React.useRef(); 
   const noteEventRef = React.useRef();
   const [midiData, setmidiData] = useState({});
-  const [cameraResetRequest, setCameraResetRequest] = useState(0)
   const canvasRef = React.useRef();
 
   const startRecording =  ()=> {
@@ -54,30 +53,16 @@ const Renderer3D = (props) => {
      console.log("midi data loaded: setting state...");
      setmidiData(midiData);
 
-     startRecording();
+     //startRecording();
    }
 
-   const updateAngles = (phi, theta) =>{
-     console.log("Updating....", phi)
-   }
-    
     return(
         <div style={{borderStyle: "solid",  borderColor: "grey",
-        'overflowY': 'auto', 'height': '500px'}}>
+        'overflowY': 'auto', 'height': '600px'}}>
 
         <div style={{borderStyle: "solid",  borderColor: "grey",
         'overflowY': 'auto', 'height': '80%'}}>  
-         {/* <CubeView 
-            aspect={1} 
-            hoverColor={0x0088FF} 
-            cubeSize={2} 
-            zoom={6} 
-            antialias={true} 
-            width={200}
-            height={200}
-        />
-         */ }
-
+        
         <Canvas camera={{ position: [0, 0, 7.5] }} >
         
           
@@ -96,16 +81,16 @@ const Renderer3D = (props) => {
           {/*<Plane args={[20, 20]} /> */}
           <Stars />
           
-          <OrbitControls ref={controlsRef} enabled={cameraResetRequest==0}/>
+          <OrbitControls ref={controlsRef}/>
           
           </Provider>
           <axesHelper args={[20, 20,20]} />
         </Canvas>
         </div>
-        <div style={{borderStyle: "solid",  borderColor: "grey", 'height': '20%'}}>  
-        <Button onClick={() => controlsRef.current.reset()}>Reset </Button>
-        <Button onClick={() => controlsRef.current.saveState()}>Memo </Button>
-           <MidiRenderer onMidiLoaded={loadMidiData} onNoteEvent={updateNote} />)
+        <div style={{borderStyle: "solid",  borderColor: "grey", 'height': '10%'}}>  
+        <Button size="sm" onClick={() => controlsRef.current.reset()}>Reset </Button>
+        <Button size="sm" onClick={() => controlsRef.current.saveState()}>Memo </Button>
+           <MidiRenderer onMidiLoaded={loadMidiData} onNoteEvent={updateNote} />
       </div>
 
         </div>
