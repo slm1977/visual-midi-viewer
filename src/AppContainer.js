@@ -3,6 +3,7 @@ import { Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
 import Renderer3D from './3DRenderer';
 import AppSettings from './components/AppSettingsTab';
 import VideoExample from './components/VideoCaptureExample';
+import MidiKeyboard from './midikeyboard';
 
 export default function AppContainer(props) {
     const [activeTab, setActiveTab] = useState('1');
@@ -19,9 +20,15 @@ export default function AppContainer(props) {
               Midi to 3D Mapper
             </NavLink>
           </NavItem>
-          {/* 
           <NavItem>
             <NavLink className={activeTab == '3' ? 'active' : ''} onClick={() => setActiveTab('3')}>
+              Midi Keyboard
+            </NavLink>
+          </NavItem>
+
+          {/* 
+          <NavItem>
+            <NavLink className={activeTab == '4' ? 'active' : ''} onClick={() => setActiveTab('3')}>
               Video Capture
             </NavLink>
           </NavItem>
@@ -39,6 +46,9 @@ export default function AppContainer(props) {
               <VideoExample/>
           </TabPane>
           */}
+           <TabPane tabId="3">
+              <MidiKeyboard store={props.store}/>
+          </TabPane>
 
         </TabContent>
       </div>

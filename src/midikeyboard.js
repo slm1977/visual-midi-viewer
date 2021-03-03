@@ -1,29 +1,35 @@
 
 import React, { Component } from 'react';
 import logo from './logo.svg';
-import './App.css';
+import './Keyboard.css';
 import MIDISounds from 'midi-sounds-react';
-
+import {Spinner} from 'reactstrap';
+// WAIT LOAD!!!
+// https://github.com/surikov/midi-sounds-react-examples/blob/master/examples/midi-sounds-example3/src/App.js
 const STYLE = {
 	keyWhite :{
 		backgroundColor: '#dddddd'
 		,width:'0.5cm'
 		,height:'0.75cm'
+		,border: "1px solid black"
 		}
 	,keyWhitePress :{
 		backgroundColor: '#ffaaaa'
 		,width:'0.5cm'
 		,height:'0.75cm'
+		,border: "1px solid black"
 		}
 	,keyBlack :{
 		backgroundColor: '#333333'
 		,width:'0.5cm'
 		,height:'0.5cm'
+		,border: "1px solid white"
 		}
 	,keyBlackPress :{
 		backgroundColor: '#990000'
 		,width:'0.5cm'
 		,height:'0.5cm'
+		,border: "1px solid white"
 		}
 	,keyNo :{
 		width:'0.5cm'
@@ -35,12 +41,13 @@ const STYLE = {
 		}
 };
 
-class App extends Component {
+class MidiKeyboard extends Component {
 	constructor(props) {
 		super(props);
 		this.midiNotes=[];
 		this.state = {
-			selectedInstrument: 192
+			selectedInstrument: 192,
+			loading:false
 			,status:'?'
 		};
 	}
@@ -51,10 +58,13 @@ class App extends Component {
 	onSelectInstrument(e){
 		var list=e.target;
 		let n = list.options[list.selectedIndex].getAttribute("value");
-		this.setState({
-			selectedInstrument: n
-		});
+		this.setState({loading:true});
 		this.midiSounds.cacheInstrument(n);
+		this.midiSounds.player.loader.waitLoad(() =>{
+			this.setState({
+				selectedInstrument: n,
+				loading:false});
+		});
 	}
 	createSelectItems() {
 		if (this.midiSounds) {
@@ -137,7 +147,7 @@ class App extends Component {
 		this.setState({status:'MIDI Access Failure'});
 	}
 	startListening(){
-		console.log("Inizio ad ascaoltare le connessioni midi");
+		console.log("Inizio ad ascoltare le connessioni midi");
 		this.setState({status:'waiting'});
 		if (navigator.requestMIDIAccess) {
 			navigator.requestMIDIAccess().then(this.requestMIDIAccessSuccess.bind(this), this.requestMIDIAccessFailure.bind(this));
@@ -145,14 +155,11 @@ class App extends Component {
 			this.setState({status:'navigator.requestMIDIAccess undefined'});
 		}
 	}
+
+	
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to midi-sounds-react example 10</h1>
-        </header>
-		<p className="App-intro">Press keys or use MIDI keyboard.</p>		
+      <div className="Keyboard">	
 		<p><select value={this.state.selectedInstrument} onChange={this.onSelectInstrument.bind(this)}>{this.createSelectItems()}</select></p>
 		<p>Status: {this.state.status}</p>
 		<table align="center">
@@ -236,17 +243,16 @@ class App extends Component {
 					</tr>
 				</tbody>
 			</table>
-		<p>Component</p>
+			{ this.state.loading && <Spinner animation="border" />}
 		<MIDISounds 
 			ref={(ref) => (this.midiSounds = ref)} 
 			appElementName="root" 
 			instruments={[this.state.selectedInstrument]} 
 			/>	
 		<hr/>
-		<p>Sources: <a href={'https://www.npmjs.com/package/midi-sounds-react'}>https://www.npmjs.com/package/midi-sounds-react</a></p>
-      </div>
+	  </div>
     );
   }
 }
 
-export default App;
+export default MidiKeyboard;
